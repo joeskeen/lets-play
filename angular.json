@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "p2p-game"
+    }
+  },
+  "defaultProject": "p2p-game",
+  "cli": {
+    "analytics": "834fbaee-0d11-40ca-b69f-6db141778760"
+  }
 }
