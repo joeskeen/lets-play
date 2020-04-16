@@ -16,7 +16,7 @@ ${encoded.match(/.{1,33}/g).join('\n')}
 
   decode<T>(encodedMessage: string): T {
     try {
-      const content = /BEGIN MESSAGE-+([\s\S]+?)-+END MESSAGE/.exec(
+      const content = /-BEGIN MESSAGE-+([\s\S]+?)-+END MESSAGE-/.exec(
         encodedMessage
       )[1];
       const encoded = (content || '').trim().replace(/\s*\r?\n\s*/g, '');

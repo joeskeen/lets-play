@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActiveModal } from '@healthcatalyst/cashmere';
+import { ActiveModal, HcToasterService } from '@healthcatalyst/cashmere';
 import { RtcService } from './rtc.service';
 import { FormControl, Validators } from '@angular/forms';
 import { map, filter, first, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   template: `
@@ -12,9 +13,26 @@ import { BehaviorSubject, Subject } from 'rxjs';
       <hc-modal-body>
         <div class="side-by-side">
           <div>
+            <h3>1. Invite someone to join your session</h3>
+            <p>
+              Copy the message below and send it to the person you want to join.
+              You can use a service like
+              <a href="https://hastebin.com" target="_blank">hastebin</a>
+              to turn this message into a short link. Tell them to send back
+              their join message after pasting yours into the Join Session
+              window.
+            </p>
+            <button hc-button (click)="copyMessage()">
+              <hc-icon fontSet="fa" fontIcon="fa-copy" hcIconSm></hc-icon>
+              Copy Message
+            </button>
             <pre><code>{{ this.hostMessage.value }}</code></pre>
           </div>
           <div>
+            <h3>2. Receive their connection</h3>
+            <p>
+              Paste their response message below to complete the connection:
+            </p>
             <textarea [formControl]="peerMessage"></textarea>
           </div>
         </div>
@@ -40,10 +58,16 @@ import { BehaviorSubject, Subject } from 'rxjs';
         flex-direction: column;
         align-items: stretch;
         justify-content: center;
+        margin: 5px;
       }
 
-      textarea {
+      textarea,
+      pre {
         flex: 1;
+      }
+
+      button hc-icon {
+        margin-right: 10px;
       }
     `,
   ],
@@ -55,7 +79,9 @@ export class CreateSessionModal implements OnInit, OnDestroy {
 
   constructor(
     private rtcService: RtcService,
-    private activeModal: ActiveModal
+    private activeModal: ActiveModal,
+    private toasterService: HcToasterService,
+    private clipboardService: ClipboardService
   ) {}
 
   async ngOnInit() {
@@ -76,6 +102,15 @@ export class CreateSessionModal implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
+  }
+
+  copyMessage() {
+    this.clipboardService.copy(this.hostMessage.value);
+    this.toasterService.addToast({
+      type: 'success',
+      header: 'Success',
+      body: 'Successfully copied invite message to clipboard',
+    });
   }
 
   cancel() {

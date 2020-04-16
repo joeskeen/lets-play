@@ -4,9 +4,24 @@ import {
   FormFieldModule,
   InputModule,
   ButtonModule,
+  IconModule,
+  ToasterModule,
+  NavbarModule,
+  PopModule,
 } from '@healthcatalyst/cashmere';
 
 @NgModule({
-  exports: [ModalModule, FormFieldModule, InputModule, ButtonModule],
+  exports: [
+    ModalModule,
+    FormFieldModule,
+    InputModule,
+    ButtonModule,
+    IconModule,
+    ToasterModule,
+    InputModule,
+    FormFieldModule,
+    NavbarModule,
+    PopModule,
+  ],
 })
 export class CashmereModule {}

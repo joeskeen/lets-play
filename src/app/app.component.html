@@ -1,13 +1,29 @@
-<div *ngIf="!client">
-  <button hc-button (click)="newSession()">New Session</button>
-  <button hc-button (click)="joinSession()">Join Session</button>
+<hc-navbar [fixedTop]="true">
+  <div class="hc-navbar-username" *ngIf="user" (click)="editUser()">
+    <img
+      class="avatar-navbar-icon"
+      [src]="user.avatarUrl"
+      [title]="user.name"
+      [alt]="user.name"
+    />
+  </div>
+</hc-navbar>
+
+<div class="content">
+  <div *ngIf="!client">
+    <button hc-button (click)="newSession()">New Session</button>
+    <button hc-button (click)="joinSession()">Join Session</button>
+  </div>
+  <div *ngIf="client">
+    <hc-form-field>
+      <hc-label>Send some data to your peer:</hc-label>
+      <input hcInput #input />
+    </hc-form-field>
+    <button hc-button (click)="client.sendMessage(input.value)">
+      Send message
+    </button>
+    <h4>Last message received from peer:</h4>
+    <pre><code>{{ client.receivedMessage$ | async }}</code></pre>
+  </div>
 </div>
-<div *ngIf="client">
-  <hc-form-field>
-    <hc-label>Send some data to your peer:</hc-label>
-    <input hcInput #input />
-  </hc-form-field>
-  <button hc-button (click)="client.sendMessage(input.value)"></button>
-  <h4>Data received from peer:</h4>
-  <pre>{{ client.receivedMessage$ | async }}</pre>
-</div>
+

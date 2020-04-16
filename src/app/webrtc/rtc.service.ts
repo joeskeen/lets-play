@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, fromEvent, combineLatest } from 'rxjs';
+import { fromEvent, combineLatest } from 'rxjs';
 import { map, filter, switchMap, tap, first } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { EncodingService } from './encoding.service';
+import { RtcClient } from './rtc-client';
 
 const win = window as Window & any;
 const RtcPeerConnection: typeof RTCPeerConnection =
@@ -31,7 +32,11 @@ export class RtcService {
         switchMap(() =>
           from(
             getPeerResponse(
-              this.encodingService.encode(peerConn.localDescription)
+              `Join me online!\r\n
+1. Go to ${window.location.href}
+2. Click Join Session
+3. Paste the following message in the text area:\r\n\r\n` +
+                this.encodingService.encode(peerConn.localDescription)
             )
           )
         ),
@@ -60,7 +65,6 @@ export class RtcService {
     const peerConn: RTCPeerConnection = new RtcPeerConnection({
       iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
     });
-    peerConn.ondatachannel = (e) => {};
     const peerJoined = fromEvent<RTCPeerConnectionIceEvent>(
       peerConn,
       'icecandidate'
@@ -97,46 +101,5 @@ export class RtcService {
 
     const client = await peerJoined;
     return client;
-  }
-}
-
-export class RtcClient {
-  private isOpen = false;
-  readonly receivedMessage$: Observable<any>;
-
-  constructor(private channel: RTCDataChannel) {
-    this.receivedMessage$ = fromEvent<MessageEvent>(channel, 'message').pipe(
-      map((e) => JSON.parse(e.data))
-    );
-    fromEvent(channel, 'open').subscribe(() => {
-      this.isOpen = true;
-    });
-  }
-  sendMessage(message: any) {
-    this.channel.send(JSON.stringify(message));
-  }
-}
-
-@Injectable({ providedIn: 'root' })
-export class RtcHostService {
-  clients: RtcClient[] = [];
-
-  constructor(private rtcService: RtcService) {}
-
-  async addParticipant() {
-    this.clients.push(
-      await this.rtcService.create((offer) => Promise.resolve({} as any))
-      // TODO actually pass on the offer
-    );
-  }
-
-  async broadcast(message: any) {
-    this.clients.forEach((c) => {
-      c.sendMessage(message);
-    });
-  }
-
-  async removeParticipant(client: RtcClient) {
-    this.clients = this.clients.filter((c) => c !== client);
   }
 }
