@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { fromEvent, combineLatest } from 'rxjs';
+import { fromEvent, combineLatest, timer } from 'rxjs';
 import { map, filter, switchMap, tap, first } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { EncodingService } from './encoding.service';
@@ -58,9 +58,12 @@ export class RtcService {
       console.error(err);
     }
     await peerJoined;
-    if (dataChannel.readyState !== 'open') {
-      await fromEvent(dataChannel, 'open').pipe(first()).toPromise();
-    }
+    await timer(0, 100)
+      .pipe(
+        filter(() => dataChannel.readyState === 'open'),
+        first()
+      )
+      .toPromise();
     client.sendMessage({ type: 'user', data: user } as IUserMessage);
     const peerUser = await client.receivedMessage$
       .pipe(
