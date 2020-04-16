@@ -8,6 +8,7 @@ import { CashmereModule } from './cashmere.module';
 import { WebrtcModule } from './webrtc/webrtc.module';
 import { ClipboardModule } from 'ngx-clipboard';
 import { ProfileModule } from './profile/profile.module';
+import { ToastsModule } from './toasts/toasts.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +20,7 @@ import { ProfileModule } from './profile/profile.module';
     WebrtcModule,
     ClipboardModule,
     ProfileModule,
+    ToastsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

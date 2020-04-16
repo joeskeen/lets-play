@@ -5,6 +5,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { map, filter, first, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ClipboardService } from 'ngx-clipboard';
+import { IUser } from '../models/user';
 
 @Component({
   template: `
@@ -79,23 +80,26 @@ export class CreateSessionModal implements OnInit, OnDestroy {
 
   constructor(
     private rtcService: RtcService,
-    private activeModal: ActiveModal,
+    private activeModal: ActiveModal<ICreateSessionModalData>,
     private toasterService: HcToasterService,
     private clipboardService: ClipboardService
   ) {}
 
   async ngOnInit() {
-    const client = await this.rtcService.create((message) => {
-      this.hostMessage.patchValue(message);
-      return this.peerMessage.valueChanges
-        .pipe(
-          takeUntil(this.destroyed),
-          map((v) => (v || '').trim()),
-          filter((v) => !!v),
-          first()
-        )
-        .toPromise();
-    });
+    const client = await this.rtcService.create(
+      this.activeModal.data.user,
+      (message) => {
+        this.hostMessage.patchValue(message);
+        return this.peerMessage.valueChanges
+          .pipe(
+            takeUntil(this.destroyed),
+            map((v) => (v || '').trim()),
+            filter((v) => !!v),
+            first()
+          )
+          .toPromise();
+      }
+    );
     this.activeModal.close(client);
   }
 
@@ -116,4 +120,8 @@ export class CreateSessionModal implements OnInit, OnDestroy {
   cancel() {
     this.activeModal.dismiss();
   }
+}
+
+export interface ICreateSessionModalData {
+  user: IUser;
 }

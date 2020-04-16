@@ -16,14 +16,17 @@
   </div>
   <div *ngIf="client">
     <hc-form-field>
-      <hc-label>Send some data to your peer:</hc-label>
+      <hc-label>Send some data to {{ client.peer.name }}:</hc-label>
       <input hcInput #input />
     </hc-form-field>
-    <button hc-button (click)="client.sendMessage(input.value)">
+    <button
+      hc-button
+      (click)="client.sendMessage({ type: 'chat', data: input.value })"
+    >
       Send message
     </button>
     <h4>Last message received from peer:</h4>
-    <pre><code>{{ client.receivedMessage$ | async }}</code></pre>
+    <pre><code>{{ client.receivedMessage$ | async | json }}</code></pre>
+    <pre><code>{{ client.peer | json }}</code></pre>
   </div>
 </div>
-

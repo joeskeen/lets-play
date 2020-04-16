@@ -8,7 +8,45 @@ $hc-icons-font-path: 'node_modules/@healthcatalyst/cashmere/hcicons';
 @import '~@healthcatalyst/cashmere/hcicons/hcicons';
 
 @import '~@healthcatalyst/cashmere/scss/cashmere';
+@import '~@healthcatalyst/cashmere/scss/colors';
 
 hc-navbar .navbar-brand {
   display: none !important;
+}
+
+.custom-toast {
+  border-radius: 5px;
+  color: white;
+  padding: 20px 10px;
+  display: flex;
+  width: 100%;
+
+  $toast-content-width: 200px;
+
+  .custom-toast-icon {
+    margin-right: 20px;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+    }
+  }
+  .custom-toast-header {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 4px;
+    width: $toast-content-width;
+    max-width: $toast-content-width;
+    word-wrap: break-word;
+  }
+  .custom-toast-body {
+    font-size: 12px;
+    width: $toast-content-width;
+    max-width: $toast-content-width;
+    word-wrap: break-word;
+  }
 }

@@ -5,6 +5,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { map, filter, first, takeUntil, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ClipboardService } from 'ngx-clipboard';
+import { IUser } from '../models/user';
 
 @Component({
   template: `
@@ -79,7 +80,7 @@ export class JoinSessionModal implements OnInit, AfterViewInit {
 
   constructor(
     private rtcService: RtcService,
-    private activeModal: ActiveModal,
+    private activeModal: ActiveModal<IJoinSessionModalData>,
     private clipboardService: ClipboardService,
     private toasterService: HcToasterService
   ) {}
@@ -93,10 +94,14 @@ export class JoinSessionModal implements OnInit, AfterViewInit {
         first()
       )
       .toPromise();
-    const client = await this.rtcService.join(hostMessage, (message) => {
-      this.peerMessage.patchValue(message);
-      return this.done.pipe(first()).toPromise();
-    });
+    const client = await this.rtcService.join(
+      hostMessage,
+      this.activeModal.data.user,
+      (message) => {
+        this.peerMessage.patchValue(message);
+        return this.done.pipe(first()).toPromise();
+      }
+    );
     this.activeModal.close(client);
   }
 
@@ -112,4 +117,8 @@ export class JoinSessionModal implements OnInit, AfterViewInit {
   cancel() {
     this.activeModal.dismiss();
   }
+}
+
+export interface IJoinSessionModalData {
+  user: IUser;
 }

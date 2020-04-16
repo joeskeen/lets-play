@@ -10,7 +10,7 @@
     "deprecation": {
       "severity": "warning"
     },
-    "component-class-suffix": [true, "Modal", "Component"],
+    "component-class-suffix": [true, "Modal", "Component", "Toast"],
     "contextual-lifecycle": true,
     "directive-class-suffix": true,
     "directive-selector": [true, "attribute", "app", "camelCase"],

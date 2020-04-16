@@ -1,8 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { ModalService, HcToasterService } from '@healthcatalyst/cashmere';
-import { CreateSessionModal } from './webrtc/create-session.modal';
-import { JoinSessionModal } from './webrtc/join-session.modal';
-import { first } from 'rxjs/operators';
+import {
+  CreateSessionModal,
+  ICreateSessionModalData,
+} from './webrtc/create-session.modal';
+import {
+  JoinSessionModal,
+  IJoinSessionModalData,
+} from './webrtc/join-session.modal';
+import { first, filter } from 'rxjs/operators';
 import { RtcClient } from './webrtc/rtc-client';
 import { IUser } from './models/user';
 import {
@@ -11,6 +17,8 @@ import {
 } from './profile/profile-setup.modal';
 import { LocalSettingsService } from './services/local-settings.service';
 import { userSettingsKey } from './services/global-settings-keys';
+import { IChatMessage } from './webrtc/messages';
+import { ChatToast } from './toasts/chat.toast';
 
 @Component({
   selector: 'app-root',
@@ -37,30 +45,28 @@ export class AppComponent implements OnInit {
 
   async newSession() {
     this.client = await this.modalService
-      .open(CreateSessionModal, { size: 'lg' })
+      .open(CreateSessionModal, {
+        size: 'lg',
+        data: {
+          user: { name: this.user.name, avatarUrl: this.user.avatarUrl },
+        } as ICreateSessionModalData,
+      })
       .result.pipe(first())
       .toPromise();
-    this.client.receivedMessage$.subscribe((m) =>
-      this.toasterService.addToast({
-        type: 'success',
-        header: 'Message Received',
-        body: m,
-      })
-    );
+    this.clientConnected();
   }
 
   async joinSession() {
     this.client = await this.modalService
-      .open(JoinSessionModal, { size: 'lg' })
+      .open(JoinSessionModal, {
+        size: 'lg',
+        data: {
+          user: { name: this.user.name, avatarUrl: this.user.avatarUrl },
+        } as IJoinSessionModalData,
+      })
       .result.pipe(first())
       .toPromise();
-    this.client.receivedMessage$.subscribe((m) =>
-      this.toasterService.addToast({
-        type: 'success',
-        header: 'Message Received',
-        body: m,
-      })
-    );
+    this.clientConnected();
   }
 
   async editUser(mandatory = false) {
@@ -75,5 +81,16 @@ export class AppComponent implements OnInit {
       .toPromise();
     this.user = user;
     await this.localSettings.set(userSettingsKey, user);
+  }
+
+  clientConnected() {
+    this.client.receivedMessage$
+      .pipe(filter((m) => m.type === 'chat'))
+      .subscribe((m: IChatMessage) => {
+        this.toasterService.addToast({ type: 'custom' }, ChatToast, {
+          message: m.data,
+          user: this.client.peer,
+        });
+      });
   }
 }

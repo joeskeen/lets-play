@@ -26,10 +26,15 @@ import { IUser } from '../models/user';
               <hc-error *ngIf="profileForm.controls.email.errors?.required">
                 Input is required
               </hc-error>
-              <hc-error *ngIf="profileForm.controls.email.errors?.email">
+              <hc-error *ngIf="profileForm.controls.email.errors?.pattern">
                 Must be a valid email
               </hc-error>
             </hc-form-field>
+            <span class="subtext">
+              Your email will only be used to generate your avatar via
+              <a href="https://gravatar.com" target="_blank">Gravatar</a>
+              and will not be shared.
+            </span>
           </div>
         </div>
       </hc-modal-body>
@@ -64,6 +69,10 @@ import { IUser } from '../models/user';
         border-radius: 125px;
         border: solid black 3px;
       }
+      span.subtext {
+        display: block;
+        font-style: italic;
+      }
       hc-modal-footer button {
         margin-left: 10px;
       }
@@ -77,7 +86,7 @@ export class ProfileSetupModal implements OnInit {
 
   readonly profileForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.email]),
+    email: new FormControl('', [Validators.required, Validators.email]),
     avatarUrl: new FormControl(this.emptyAvatar),
   });
 

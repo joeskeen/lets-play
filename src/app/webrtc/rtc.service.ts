@@ -4,6 +4,8 @@ import { map, filter, switchMap, tap, first } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { EncodingService } from './encoding.service';
 import { RtcClient } from './rtc-client';
+import { IUserMessage } from './messages';
+import { IUser } from '../models/user';
 
 const win = window as Window & any;
 const RtcPeerConnection: typeof RTCPeerConnection =
@@ -16,6 +18,7 @@ export class RtcService {
   constructor(private encodingService: EncodingService) {}
 
   async create(
+    user: IUser,
     getPeerResponse: (localDescriptionMessage: string) => Promise<string>
   ): Promise<RtcClient> {
     const peerConn: RTCPeerConnection = new RtcPeerConnection({
@@ -55,33 +58,44 @@ export class RtcService {
       console.error(err);
     }
     await peerJoined;
+    if (dataChannel.readyState !== 'open') {
+      await fromEvent(dataChannel, 'open').pipe(first()).toPromise();
+    }
+    client.sendMessage({ type: 'user', data: user } as IUserMessage);
+    const peerUser = await client.receivedMessage$
+      .pipe(
+        filter((m) => m.type === 'user'),
+        map((m: IUserMessage) => m.data),
+        first()
+      )
+      .toPromise();
+    client.peer = peerUser;
     return client;
   }
 
   async join(
     offer: string,
-    getHostResponse: (sessionDescription: string) => Promise<void>
+    user: IUser,
+    sendResponseToHost: (sessionDescription: string) => void
   ): Promise<RtcClient> {
     const peerConn: RTCPeerConnection = new RtcPeerConnection({
       iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
     });
-    const peerJoined = fromEvent<RTCPeerConnectionIceEvent>(
+    const clientCreated = fromEvent<RTCPeerConnectionIceEvent>(
       peerConn,
       'icecandidate'
     )
       .pipe(
         filter((e) => e.candidate == null),
-        switchMap(() =>
-          combineLatest([
-            fromEvent<RTCDataChannelEvent>(peerConn, 'datachannel'),
-            from(
-              getHostResponse(
-                this.encodingService.encode(peerConn.localDescription)
-              )
-            ),
-          ])
+        tap(() =>
+          sendResponseToHost(
+            this.encodingService.encode(peerConn.localDescription)
+          )
         ),
-        map((val) => val[0].channel),
+        switchMap(() =>
+          fromEvent<RTCDataChannelEvent>(peerConn, 'datachannel')
+        ),
+        map((val) => val.channel),
         map((channel) => new RtcClient(channel)),
         first()
       )
@@ -99,7 +113,16 @@ export class RtcService {
       console.warn(`Couldn't create answer`);
     }
 
-    const client = await peerJoined;
+    const client = await clientCreated;
+    const peerUser = await client.receivedMessage$
+      .pipe(
+        filter((m) => m.type === 'user'),
+        map((m: IUserMessage) => m.data),
+        first()
+      )
+      .toPromise();
+    client.peer = peerUser;
+    client.sendMessage({ type: 'user', data: user } as IUserMessage);
     return client;
   }
 }
