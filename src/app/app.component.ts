@@ -5,7 +5,10 @@ import { JoinSessionModal } from './webrtc/join-session.modal';
 import { first } from 'rxjs/operators';
 import { RtcClient } from './webrtc/rtc-client';
 import { IUser } from './models/user';
-import { ProfileSetupModal } from './profile/profile-setup.modal';
+import {
+  ProfileSetupModal,
+  IProfileSetupData,
+} from './profile/profile-setup.modal';
 import { LocalSettingsService } from './services/local-settings.service';
 import { userSettingsKey } from './services/global-settings-keys';
 
@@ -28,7 +31,7 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     this.user = await this.localSettings.get<IUser>(userSettingsKey);
     if (!this.user) {
-      this.editUser();
+      this.editUser(true);
     }
   }
 
@@ -60,9 +63,14 @@ export class AppComponent implements OnInit {
     );
   }
 
-  async editUser() {
+  async editUser(mandatory = false) {
     const user: IUser = await this.modalService
-      .open(ProfileSetupModal, { size: 'md', data: this.user })
+      .open(ProfileSetupModal, {
+        size: 'md',
+        data: { user: this.user, canCancel: !mandatory } as IProfileSetupData,
+        ignoreEscapeKey: mandatory,
+        ignoreOverlayClick: mandatory,
+      })
       .result.pipe(first())
       .toPromise();
     this.user = user;

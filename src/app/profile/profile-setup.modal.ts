@@ -3,6 +3,7 @@ import { ActiveModal } from '@healthcatalyst/cashmere';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import * as md5 from 'md5';
 import { map } from 'rxjs/operators';
+import { IUser } from '../models/user';
 
 @Component({
   template: `
@@ -36,6 +37,7 @@ import { map } from 'rxjs/operators';
         <button
           hc-button
           buttonStyle="secondary"
+          *ngIf="activeModal.data.canCancel"
           (click)="activeModal.dismiss()"
         >
           Cancel
@@ -79,11 +81,11 @@ export class ProfileSetupModal implements OnInit {
     avatarUrl: new FormControl(this.emptyAvatar),
   });
 
-  constructor(public activeModal: ActiveModal) {}
+  constructor(public activeModal: ActiveModal<IProfileSetupData>) {}
 
   ngOnInit() {
-    if (this.activeModal.data) {
-      this.profileForm.patchValue(this.activeModal.data);
+    if (this.activeModal.data.user) {
+      this.profileForm.patchValue(this.activeModal.data.user);
     }
 
     this.profileForm.controls.email.valueChanges
@@ -104,4 +106,9 @@ export class ProfileSetupModal implements OnInit {
 
     return `https://www.gravatar.com/avatar/${hash}?s=${this.avatarSize}&r=g&d=monsterid`;
   }
+}
+
+export interface IProfileSetupData {
+  canCancel: boolean;
+  user: IUser;
 }
