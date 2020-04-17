@@ -11,13 +11,13 @@
     ☐ Nominate game to play
     ☐ Vote to start Game (end waiting for others to join)
     ☐ Vote to end game
-☐ Host Options (drawer?)
+☐ Session Settings (drawer or modal?)
     ☐ Session Name
     ☐ Government types
         ☐ Benevolent dictatorship / Democracy - automatically approve all intents with majority votes; host can always execute intents
         ☐ Dictatorship - allow players to create intents, but only host can approve them
     ☐ Abdicate host role to player
-    ☐ Invite player
+    ☐ Invite player (would have to close one modal to open another?)
 ☐ Create session button change: open host options modal
 ☐ Leave Session
 ☐ Auto-boot user if their connection dies
