@@ -1,4 +1,5 @@
-☐ Session manager
+☐ Session manager (drawer?)
+    ☐ Show session name
     ☐ Show all the players
     ☐ Show who is the host
     ☐ Show the government model
@@ -10,11 +11,14 @@
     ☐ Nominate game to play
     ☐ Vote to start Game (end waiting for others to join)
     ☐ Vote to end game
-☐ Host Options
+☐ Host Options (drawer?)
+    ☐ Session Name
     ☐ Government types
         ☐ Benevolent dictatorship / Democracy - automatically approve all intents with majority votes; host can always execute intents
         ☐ Dictatorship - allow players to create intents, but only host can approve them
     ☐ Abdicate host role to player
+    ☐ Invite player
+☐ Create session button change: open host options modal
 ☐ Leave Session
 ☐ Auto-boot user if their connection dies
     ☐ If host leaves / is booted, make player that joined earliest the new host
