@@ -10,9 +10,15 @@
 </hc-navbar>
 
 <div class="content">
-  <div *ngIf="!client">
-    <button hc-button (click)="newSession()">New Session</button>
-    <button hc-button (click)="joinSession()">Join Session</button>
+  <div *ngIf="!client" class="initialView">
+    <button hc-button (click)="newSession()">
+      <hc-icon fontSet="fa" fontIcon="fa-plus" class="icon-left"></hc-icon>
+      New Session
+    </button>
+    <button hc-button (click)="joinSession()">
+      <hc-icon fontSet="fa" fontIcon="fa-sign-in" class="icon-left"></hc-icon>
+      Join Session
+    </button>
   </div>
   <div *ngIf="client">
     <hc-form-field>

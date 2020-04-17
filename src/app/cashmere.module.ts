@@ -8,6 +8,7 @@ import {
   ToasterModule,
   NavbarModule,
   PopModule,
+  AccordionModule,
 } from '@healthcatalyst/cashmere';
 
 @NgModule({
@@ -22,6 +23,7 @@ import {
     FormFieldModule,
     NavbarModule,
     PopModule,
+    AccordionModule,
   ],
 })
 export class CashmereModule {}

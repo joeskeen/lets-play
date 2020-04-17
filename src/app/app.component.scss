@@ -1,9 +1,31 @@
+:host {
+  height: 100%;
+}
+
 .content {
+  padding: 15px;
   padding-top: 75px;
+  height: 100%;
 }
 
 .avatar-navbar-icon {
   width: 40px;
   height: 40px;
   border-radius: 20px;
+}
+
+.initialView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  button:not(last-child) {
+    margin-top: 15px;
+  }
+}
+
+.icon-left {
+  margin-right: 5px;
 }

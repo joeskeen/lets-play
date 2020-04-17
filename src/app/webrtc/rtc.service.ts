@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { fromEvent, combineLatest, timer } from 'rxjs';
+import { fromEvent, timer } from 'rxjs';
 import { map, filter, switchMap, tap, first } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { EncodingService } from './encoding.service';
@@ -15,11 +15,11 @@ const RtcPeerConnection: typeof RTCPeerConnection =
 
 @Injectable({ providedIn: 'root' })
 export class RtcService {
-  constructor(private encodingService: EncodingService) {}
-
   async create(
     user: IUser,
-    getPeerResponse: (localDescriptionMessage: string) => Promise<string>
+    getPeerResponse: (
+      localDescriptionMessage: RTCSessionDescriptionInit
+    ) => Promise<RTCSessionDescriptionInit>
   ): Promise<RtcClient> {
     const peerConn: RTCPeerConnection = new RtcPeerConnection({
       iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
@@ -32,32 +32,19 @@ export class RtcService {
     )
       .pipe(
         filter((e) => e.candidate === null),
-        switchMap(() =>
-          from(
-            getPeerResponse(
-              `Join me online!\r\n
-1. Go to ${window.location.href}
-2. Click Join Session
-3. Paste the following message in the text area:\r\n\r\n` +
-                this.encodingService.encode(peerConn.localDescription)
-            )
-          )
-        ),
-        tap((answer) =>
-          peerConn.setRemoteDescription(
-            new RTCSessionDescription(this.encodingService.decode(answer))
-          )
-        ),
+        switchMap(() => from(getPeerResponse(peerConn.localDescription))),
         first()
       )
       .toPromise();
+
     try {
       const desc = await peerConn.createOffer({});
-      peerConn.setLocalDescription(desc);
+      await peerConn.setLocalDescription(desc);
     } catch (err) {
       console.error(err);
     }
-    await peerJoined;
+    const answer = await peerJoined;
+    await peerConn.setRemoteDescription(answer);
     await timer(0, 100)
       .pipe(
         filter(() => dataChannel.readyState === 'open'),
@@ -77,9 +64,9 @@ export class RtcService {
   }
 
   async join(
-    offer: string,
+    offer: RTCSessionDescriptionInit,
     user: IUser,
-    sendResponseToHost: (sessionDescription: string) => void
+    sendResponseToHost: (sessionDescription: RTCSessionDescription) => void
   ): Promise<RtcClient> {
     const peerConn: RTCPeerConnection = new RtcPeerConnection({
       iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
@@ -90,11 +77,7 @@ export class RtcService {
     )
       .pipe(
         filter((e) => e.candidate == null),
-        tap(() =>
-          sendResponseToHost(
-            this.encodingService.encode(peerConn.localDescription)
-          )
-        ),
+        tap(() => sendResponseToHost(peerConn.localDescription)),
         switchMap(() =>
           fromEvent<RTCDataChannelEvent>(peerConn, 'datachannel')
         ),
@@ -104,14 +87,11 @@ export class RtcService {
       )
       .toPromise();
 
-    const offerDesc = new RTCSessionDescription(
-      this.encodingService.decode(offer)
-    );
-    peerConn.setRemoteDescription(offerDesc);
+    await peerConn.setRemoteDescription(offer);
 
     try {
       const answerDesc = await peerConn.createAnswer({});
-      peerConn.setLocalDescription(answerDesc);
+      await peerConn.setLocalDescription(answerDesc);
     } catch (err) {
       console.warn(`Couldn't create answer`);
     }
