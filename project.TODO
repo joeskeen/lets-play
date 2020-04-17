@@ -12,7 +12,7 @@
     ☐ Vote to end game
 ☐ Host Options
     ☐ Government types
-        ☐ Democracy - automatically approve all intents with majority votes
+        ☐ Benevolent dictatorship / Democracy - automatically approve all intents with majority votes; host can always execute intents
         ☐ Dictatorship - allow players to create intents, but only host can approve them
     ☐ Abdicate host role to player
 ☐ Leave Session
