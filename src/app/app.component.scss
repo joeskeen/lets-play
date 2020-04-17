@@ -1,3 +1,5 @@
+@import '~@healthcatalyst/cashmere/scss/colors';
+
 :host {
   height: 100%;
 }
@@ -28,4 +30,8 @@
 
 .icon-left {
   margin-right: 5px;
+}
+
+hc-navbar-mobile-menu * {
+  color: $slate-gray-200 !important;
 }

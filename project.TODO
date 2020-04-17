@@ -1,0 +1,28 @@
+☐ Session manager
+    ☐ Show all the players
+    ☐ Show who is the host
+    ☐ Show the government model
+    ☐ Option to chat with any player
+☐ Intents
+    ☐ Boot Player
+    ☐ Skip Player
+    ☐ Coup / Mutiny - automatically passes if >= 75% of participants vote for it
+    ☐ Nominate game to play
+    ☐ Vote to start Game (end waiting for others to join)
+    ☐ Vote to end game
+☐ Host Options
+    ☐ Government types
+        ☐ Democracy - automatically approve all intents with majority votes
+        ☐ Dictatorship - allow players to create intents, but only host can approve them
+    ☐ Abdicate host role to player
+☐ Leave Session
+☐ Auto-boot user if their connection dies
+    ☐ If host leaves / is booted, make player that joined earliest the new host
+☐ View all session participants
+☐ Drawer for chats
+☐ Connect participants with each other by exchanging RTC handshake through host
+☐ Unique ID for each participant (Symbol)?
+☐ Messages
+    ☐ Change user profile info (synchronize profile changes)
+☐ Mobile friendliness
+☐ Allow invitation to be URL query parameter to auto-join

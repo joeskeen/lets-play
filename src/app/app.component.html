@@ -7,10 +7,26 @@
       [alt]="user.name"
     />
   </div>
+  <hc-navbar-mobile-menu>
+    <hc-list>
+      <hc-list-item (click)="editUser()">
+        <img
+          class="avatar-navbar-icon"
+          [src]="user?.avatarUrl"
+          [title]="user?.name"
+          [alt]="user?.name"
+          hcListIcon
+        />
+        <h4 hcListLine>{{ user?.name }}</h4>
+        <span hcListLine>Edit your profile</span>
+      </hc-list-item>
+    </hc-list>
+  </hc-navbar-mobile-menu>
 </hc-navbar>
 
 <div class="content">
   <div *ngIf="!client" class="initialView">
+    <h1>Let's play!</h1>
     <button hc-button (click)="newSession()">
       <hc-icon fontSet="fa" fontIcon="fa-plus" class="icon-left"></hc-icon>
       New Session

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActiveModal, HcToasterService } from '@healthcatalyst/cashmere';
 import { RtcService } from './rtc.service';
 import { FormControl, Validators } from '@angular/forms';

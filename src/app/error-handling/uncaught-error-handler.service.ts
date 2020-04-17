@@ -4,7 +4,8 @@ import { HcToasterService } from '@healthcatalyst/cashmere';
 @Injectable({ providedIn: 'root' })
 export class UncaughtErrorHandlerService implements ErrorHandler {
   constructor(private toasterService: HcToasterService) {}
-  handleError() {
+  handleError(error: any) {
+    console.error(error);
     this.toasterService.addToast({
       type: 'alert',
       header: 'Oops',
