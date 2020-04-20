@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IUser } from '../models/user';
+import { IUser } from '../user/user';
 
 @Component({
   template: `

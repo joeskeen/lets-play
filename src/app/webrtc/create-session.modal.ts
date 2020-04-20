@@ -5,7 +5,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { map, filter, first, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ClipboardService } from 'ngx-clipboard';
-import { IUser } from '../models/user';
+import { IUser } from '../user/user';
 import { EncodingService } from './encoding.service';
 
 @Component({

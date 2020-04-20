@@ -3,7 +3,8 @@ import { ActiveModal } from '@healthcatalyst/cashmere';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import * as md5 from 'md5';
 import { map } from 'rxjs/operators';
-import { IUser } from '../models/user';
+import { IUser } from './user';
+import { v4 as uuid } from 'uuid';
 
 @Component({
   template: `
@@ -79,7 +80,7 @@ import { IUser } from '../models/user';
     `,
   ],
 })
-export class ProfileSetupModal implements OnInit {
+export class UserSetupModal implements OnInit {
   private readonly emptyAvatar =
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII';
   private readonly avatarSize = 250;
@@ -88,9 +89,10 @@ export class ProfileSetupModal implements OnInit {
     name: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     avatarUrl: new FormControl(this.emptyAvatar),
+    uniqueId: new FormControl(undefined),
   });
 
-  constructor(public activeModal: ActiveModal<IProfileSetupData>) {}
+  constructor(public activeModal: ActiveModal<IUserSetupData>) {}
 
   ngOnInit() {
     if (this.activeModal.data.user) {
@@ -103,7 +105,11 @@ export class ProfileSetupModal implements OnInit {
   }
 
   save() {
-    this.activeModal.close(this.profileForm.value);
+    const user: IUser = this.profileForm.value;
+    if (!user.uniqueId) {
+      user.uniqueId = uuid();
+    }
+    this.activeModal.close(user);
   }
 
   private createAvatarUrl(email: string): string {
@@ -117,7 +123,7 @@ export class ProfileSetupModal implements OnInit {
   }
 }
 
-export interface IProfileSetupData {
+export interface IUserSetupData {
   canCancel: boolean;
   user: IUser;
 }

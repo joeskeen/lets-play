@@ -5,7 +5,7 @@ import { from } from 'rxjs';
 import { EncodingService } from './encoding.service';
 import { RtcClient } from './rtc-client';
 import { IUserMessage } from './messages';
-import { IUser } from '../models/user';
+import { IUser } from '../user/user';
 
 const win = window as Window & any;
 const RtcPeerConnection: typeof RTCPeerConnection =

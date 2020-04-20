@@ -6,7 +6,7 @@
     ☐ Option to chat with any player
 ☐ Intents
     ☐ Boot Player
-    ☐ Skip Player
+    ☐ Skip Player (only applies if there is a game in progress)
     ☐ Coup / Mutiny - automatically passes if >= 75% of participants vote for it
     ☐ Nominate game to play
     ☐ Vote to start Game (end waiting for others to join)
@@ -25,7 +25,7 @@
 ☐ View all session participants
 ☐ Drawer for chats
 ☐ Connect participants with each other by exchanging RTC handshake through host
-☐ Unique ID for each participant (Symbol)?
+✔ Unique ID for each participant (Symbol)? @done (4/17/2020, 11:24:19 PM)
 ☐ Messages
     ☐ Change user profile info (synchronize profile changes)
 ☐ Mobile friendliness

@@ -1,4 +1,4 @@
-import { IUser } from '../models/user';
+import { IUser } from '../user/user';
 
 export interface IMessage<T = any> {
   type: string;
