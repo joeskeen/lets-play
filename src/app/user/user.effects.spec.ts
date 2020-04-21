@@ -115,7 +115,7 @@ describe('UserEffects', () => {
 
     it('should dispatch update user', fakeAsync(() => {
       // arrange preconditions
-      state.next({ user: testUser });
+      state.next(testUser);
 
       actions.next(requestEditUser({ mandatory: true }));
       tick();
@@ -125,7 +125,7 @@ describe('UserEffects', () => {
     describe('when mandatory is true', () => {
       beforeEach(fakeAsync(() => {
         // arrange preconditions
-        state.next({ user: null });
+        state.next(null);
 
         // act
         actions.next(requestEditUser({ mandatory: true }));
@@ -140,7 +140,7 @@ describe('UserEffects', () => {
     describe('when mandatory is false', () => {
       beforeEach(fakeAsync(() => {
         // arrange preconditions
-        state.next({ user: testUser });
+        state.next(testUser);
 
         // act
         actions.next(requestEditUser({ mandatory: false }));

@@ -1,19 +1,12 @@
 import { Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-
-export type FakeStore<T> = jasmine.SpyObj<Store<T>> & Subject<T>;
+import { Subject, Observable } from 'rxjs';
 
 export function createFakeStore<T>(): FakeStore<T> {
-  const subject = new Subject<T>();
-  const spyObj = jasmine.createSpyObj<Store<T>>('fakeStore', [
-    'dispatch',
-    'select',
-    'pipe',
-  ]);
-  spyObj.select.and.callFake((fn: any) => subject.pipe(map(fn)) as any);
-  spyObj.pipe.and.callFake((...args: any[]) =>
-    subject.pipe.apply(subject, args)
-  );
-  return { ...spyObj, ...subject, next: subject.next } as FakeStore<T>;
+  const actionSubject = new Subject<any>();
+  const fake: any = new Subject<T>();
+  fake.dispatch = (a: any) => actionSubject.next(a);
+  fake.actions = actionSubject.asObservable();
+  return fake;
 }
+
+export type FakeStore<T> = Store<T> & Subject<T> & { actions: Observable<any> };

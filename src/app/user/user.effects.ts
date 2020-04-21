@@ -8,7 +8,7 @@ import { UserSetupModal, IUserSetupData } from './user-setup.modal';
 import { IUser } from './user';
 import { requestLoadUser, updateUser, requestEditUser } from './user.actions';
 import { Store } from '@ngrx/store';
-import { UserState, getUser } from './user.reducer';
+import { UserState } from './user.reducer';
 
 const userStorageKey = 'global:user';
 
@@ -34,7 +34,7 @@ export class UserEffects {
   readonly requestEditUser = createEffect(() =>
     this.actions$.pipe(
       ofType(requestEditUser),
-      withLatestFrom(this.store.select(getUser)),
+      withLatestFrom(this.store),
       switchMap(
         ([action, user]) =>
           this.modalService

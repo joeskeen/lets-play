@@ -18,7 +18,7 @@ const userFeatureKey = 'user';
     FormsModule,
     ReactiveFormsModule,
     StorageModule,
-    StoreModule.forFeature(userFeatureKey, { user: UserReducer }),
+    StoreModule.forFeature(userFeatureKey, UserReducer),
     EffectsModule.forFeature([UserEffects]),
   ],
   providers: [UserEffects],
