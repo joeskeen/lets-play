@@ -43,7 +43,7 @@ export class AppEffects {
       ofType(connectionMessageReceived),
       filter((a) => a.message.type === '@ngrx-action'),
       // TODO: this probably will go horribly wrong if further filtering isn't done
-      map((a) => a.message.data as TypedAction<any>)
+      map((a) => a.message.data.action as TypedAction<any>)
     )
   );
 }
