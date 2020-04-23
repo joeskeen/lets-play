@@ -16,7 +16,7 @@ const groupFeatureKey = 'group';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    StoreModule.forFeature(groupFeatureKey, [GroupReducer]),
+    StoreModule.forFeature(groupFeatureKey, GroupReducer),
     EffectsModule.forFeature([GroupEffects]),
   ],
   declarations: [GroupSettingsModal],

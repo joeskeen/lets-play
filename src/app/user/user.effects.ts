@@ -10,6 +10,7 @@ import { requestLoadUser, updateUser, requestEditUser } from './user.actions';
 import { Store } from '@ngrx/store';
 import { UserState, getUser } from './user.reducer';
 import { AppState } from '../global/app.reducer';
+import { updateGroupUser } from '../group/group.actions';
 
 const userStorageKey = 'global:user';
 
@@ -48,12 +49,19 @@ export class UserEffects {
     )
   );
 
-  readonly updateUser = createEffect(
+  readonly storeUpdatedUser = createEffect(
     () =>
       this.actions$.pipe(
         ofType(updateUser),
         switchMap((u) => this.storageMap.set(userStorageKey, u.user))
       ),
     { dispatch: false }
+  );
+
+  readonly updateUserInGroup = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateUser),
+      map((u) => updateGroupUser({ user: { ...u.user, email: undefined } }))
+    )
   );
 }

@@ -5,6 +5,8 @@ import { AppState } from './global/app.reducer';
 import { requestLoadUser, requestEditUser } from './user/user.actions';
 import { Observable } from 'rxjs';
 import { getUser } from './user/user.reducer';
+import { ModalService } from '@healthcatalyst/cashmere';
+import { requestCreateGroup, requestJoinGroup } from './group/group.actions';
 
 @Component({
   selector: 'app-root',
@@ -15,12 +17,24 @@ import { getUser } from './user/user.reducer';
 export class AppComponent implements OnInit {
   readonly user$: Observable<IUser>;
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private modalService: ModalService
+  ) {
     this.user$ = store.pipe(select(getUser));
+    this.modalService.allowMultiple = true;
   }
 
   async ngOnInit() {
     this.store.dispatch(requestLoadUser());
+  }
+
+  createGroup() {
+    this.store.dispatch(requestCreateGroup());
+  }
+
+  joinGroup() {
+    this.store.dispatch(requestJoinGroup());
   }
 
   // async newSession() {

@@ -33,15 +33,12 @@
 
 <div class="content">
   <div class="initialView">
-    <!--*ngIf="!client"-->
     <h1>Let's play!</h1>
-    <button hc-button>
-      <!--(click)="newSession()"-->
+    <button hc-button (click)="createGroup()">
       <hc-icon fontSet="fas" fontIcon="fa-plus" class="icon-left"></hc-icon>
       New Group
     </button>
-    <button hc-button>
-      <!--(click)="joinSession()"-->
+    <button hc-button (click)="joinGroup()">
       <hc-icon
         fontSet="fas"
         fontIcon="fa-sign-in-alt"

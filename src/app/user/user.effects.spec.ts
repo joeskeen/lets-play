@@ -16,12 +16,13 @@ import {
 import { IUser } from './user';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { UserSetupModal } from './user-setup.modal';
+import { AppState } from '../global/app.reducer';
 
 describe('UserEffects', () => {
   let effects: UserEffects;
   let actions: Subject<Action>;
   let storageMap: jasmine.SpyObj<StorageMap>;
-  let state: FakeStore<UserState>;
+  let state: FakeStore<AppState>;
   let modalService: jasmine.SpyObj<ModalService>;
 
   const testUser: IUser = Object.freeze({
@@ -34,12 +35,12 @@ describe('UserEffects', () => {
   beforeEach(() => {
     actions = new Subject<Action>();
     storageMap = jasmine.createSpyObj<StorageMap>('StorageMap', ['get', 'set']);
-    state = createFakeStore<UserState>();
+    state = createFakeStore<AppState>();
     modalService = jasmine.createSpyObj<ModalService>('ModalService', ['open']);
     effects = new UserEffects(
       new Actions(actions),
       storageMap,
-      (state as Partial<Store<UserState>>) as Store<UserState>,
+      (state as Partial<Store<AppState>>) as Store<AppState>,
       modalService
     );
   });
@@ -115,7 +116,7 @@ describe('UserEffects', () => {
 
     it('should dispatch update user', fakeAsync(() => {
       // arrange preconditions
-      state.next(testUser);
+      state.next({ user: testUser });
 
       actions.next(requestEditUser({ mandatory: true }));
       tick();
@@ -125,7 +126,7 @@ describe('UserEffects', () => {
     describe('when mandatory is true', () => {
       beforeEach(fakeAsync(() => {
         // arrange preconditions
-        state.next(null);
+        state.next({ user: null });
 
         // act
         actions.next(requestEditUser({ mandatory: true }));
@@ -140,7 +141,7 @@ describe('UserEffects', () => {
     describe('when mandatory is false', () => {
       beforeEach(fakeAsync(() => {
         // arrange preconditions
-        state.next(testUser);
+        state.next({ user: testUser });
 
         // act
         actions.next(requestEditUser({ mandatory: false }));
@@ -157,7 +158,7 @@ describe('UserEffects', () => {
     let result: any;
     beforeEach(fakeAsync(() => {
       storageMap.set.and.returnValue(of(undefined));
-      effects.updateUser.subscribe((r) => (result = r));
+      effects.storeUpdatedUser.subscribe((r) => (result = r));
       actions.next(updateUser({ user: testUser }));
       tick();
     }));

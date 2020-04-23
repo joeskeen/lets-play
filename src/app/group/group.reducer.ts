@@ -23,6 +23,11 @@ export const GroupReducer = createReducer(
       action.user,
     ],
   })),
+  on(actions.resetGroupUsers, (state, action) => ({
+    ...state,
+    users: [action.initialUser],
+    supremeLeader: action.initialUser,
+  })),
   on(actions.createInitiative, (state, action) => ({
     ...state,
     activeInitiatives: [
@@ -76,6 +81,7 @@ export const GroupReducer = createReducer(
   on(actions.updateGroupUser, (state, action) => ({
     ...state,
     supremeLeader:
+      state.supremeLeader &&
       state.supremeLeader.uniqueId === action.user.uniqueId
         ? { ...state.supremeLeader, ...action.user }
         : state.supremeLeader,

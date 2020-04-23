@@ -5,6 +5,8 @@ import { IUser } from '../user/user';
 const groupActionKey = (type: string) => `group:${type}`;
 
 export const requestCreateGroup = createAction(groupActionKey('requestCreate'));
+export const requestEditGroup = createAction(groupActionKey('requestEdit'));
+export const requestJoinGroup = createAction(groupActionKey('requestJoin'));
 export const updateGroup = createAction(
   groupActionKey('update'),
   props<{ group: IGroup }>()
@@ -14,6 +16,10 @@ export const requestAddUser = createAction(groupActionKey('requestAddNewUser'));
 export const requestRemoveUser = createAction(
   groupActionKey('requestRemoveUser'),
   props<{ user: IUser }>()
+);
+export const resetGroupUsers = createAction(
+  groupActionKey('resetUsers'),
+  props<{ initialUser: IUser }>()
 );
 export const requestConnectUsers = createAction(
   groupActionKey('connectUsers'),

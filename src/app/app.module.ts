@@ -15,6 +15,7 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { AppReducer } from './global/app.reducer';
+import { GroupModule } from './group/group.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +27,7 @@ import { AppReducer } from './global/app.reducer';
     WebrtcModule,
     ClipboardModule,
     UserModule,
+    GroupModule,
     ToastsModule,
     StoreModule.forRoot([AppReducer]),
     EffectsModule.forRoot([]),
