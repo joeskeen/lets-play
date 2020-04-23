@@ -11,22 +11,21 @@ import { EncodingService } from './encoding.service';
 @Component({
   template: `
     <hc-modal>
-      <hc-modal-header>Create a new session</hc-modal-header>
+      <hc-modal-header>Add new player</hc-modal-header>
       <hc-modal-body>
         <div>
           <div>
-            <h3>1. Invite someone to join your session</h3>
+            <h3>1. Invite someone to join your group</h3>
             <p>
               Copy the message below and send it to the person you want to join.
               You can use a service like
               <a href="https://hastebin.com" target="_blank">hastebin</a>
               to turn this message into a short link. Tell them to send back
-              their join message after pasting yours into the Join Session
-              window.
+              their join message after pasting yours into the Join Group window.
             </p>
             <div class="centered">
               <button hc-button (click)="copyMessage()">
-                <hc-icon fontSet="fa" fontIcon="fa-copy" hcIconSm></hc-icon>
+                <hc-icon fontSet="fas" fontIcon="fa-copy" hcIconSm></hc-icon>
                 Copy Invitation Message
               </button>
             </div>
@@ -90,14 +89,14 @@ import { EncodingService } from './encoding.service';
     `,
   ],
 })
-export class CreateSessionModal implements OnInit, OnDestroy {
+export class InitiateConnectionModal implements OnInit, OnDestroy {
   readonly hostMessage = new FormControl('');
   readonly peerMessage = new FormControl('', [Validators.required]);
   private readonly destroyed = new Subject<void>();
 
   constructor(
     private rtcService: RtcService,
-    private activeModal: ActiveModal<ICreateSessionModalData>,
+    private activeModal: ActiveModal<IInitiateConnectionData>,
     private toasterService: HcToasterService,
     private clipboardService: ClipboardService,
     private encodingService: EncodingService
@@ -110,7 +109,7 @@ export class CreateSessionModal implements OnInit, OnDestroy {
         (message) => {
           const invitation = `Join me online!\r\n
 1. Go to ${window.location.href}
-2. Click Join Session
+2. Click Join Group
 3. Paste the following message in the text area:\r\n\r\n${this.encodingService.encode(
             message
           )}`;
@@ -156,6 +155,6 @@ export class CreateSessionModal implements OnInit, OnDestroy {
   }
 }
 
-export interface ICreateSessionModalData {
+export interface IInitiateConnectionData {
   user: IUser;
 }

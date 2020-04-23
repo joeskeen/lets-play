@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CashmereModule } from '../cashmere.module';
-import { CreateSessionModal } from './create-session.modal';
+import { InitiateConnectionModal } from './initiate-connection.modal';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { JoinSessionModal } from './join-session.modal';
+import { CompleteConnectionModal } from './complete-connection.modal';
 
 @NgModule({
   imports: [CommonModule, CashmereModule, ReactiveFormsModule, FormsModule],
-  declarations: [CreateSessionModal, JoinSessionModal],
-  exports: [CreateSessionModal, JoinSessionModal],
-  entryComponents: [CreateSessionModal, JoinSessionModal],
+  declarations: [InitiateConnectionModal, CompleteConnectionModal],
+  exports: [InitiateConnectionModal, CompleteConnectionModal],
+  entryComponents: [InitiateConnectionModal, CompleteConnectionModal],
 })
 export class WebrtcModule {}

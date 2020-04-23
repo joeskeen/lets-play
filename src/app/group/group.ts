@@ -2,9 +2,8 @@ import { IUser } from '../user/user';
 
 export type GovernmentType = 'semi-direct democracy' | 'totalitarian';
 
-export interface ISession {
-  sessionName: string;
-  sessionStartTimestamp: number;
+export interface IGroup {
+  groupName: string;
   users: IUser[];
   supremeLeader: IUser;
   governmentType: GovernmentType;
@@ -12,6 +11,7 @@ export interface ISession {
 }
 
 export interface IInitiative {
+  uniqueId: string;
   initiativeType: string;
   champion: IUser;
   supporters: IUser[];

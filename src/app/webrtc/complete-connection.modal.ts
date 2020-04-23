@@ -11,7 +11,7 @@ import { EncodingService } from './encoding.service';
 @Component({
   template: `
     <hc-modal>
-      <hc-modal-header>Join an existing session</hc-modal-header>
+      <hc-modal-header>Join an existing group</hc-modal-header>
       <hc-modal-body>
         <div>
           <div>
@@ -36,7 +36,7 @@ import { EncodingService } from './encoding.service';
                 [disabled]="hostMessage.invalid"
               >
                 <hc-icon
-                  fontSet="fa"
+                  fontSet="fas"
                   fontIcon="fa-copy"
                   hcIconSm
                   class="icon-left"
@@ -92,14 +92,14 @@ import { EncodingService } from './encoding.service';
     `,
   ],
 })
-export class JoinSessionModal implements OnInit, AfterViewInit {
+export class CompleteConnectionModal implements OnInit, AfterViewInit {
   readonly hostMessage = new FormControl('', [Validators.required]);
   readonly peerMessage = new FormControl('', [Validators.required]);
   readonly done = new Subject<void>();
 
   constructor(
     private rtcService: RtcService,
-    private activeModal: ActiveModal<IJoinSessionModalData>,
+    private activeModal: ActiveModal<ICompleteConnectionData>,
     private clipboardService: ClipboardService,
     private toasterService: HcToasterService,
     private encodingService: EncodingService
@@ -147,6 +147,6 @@ export class JoinSessionModal implements OnInit, AfterViewInit {
   }
 }
 
-export interface IJoinSessionModalData {
+export interface ICompleteConnectionData {
   user: IUser;
 }

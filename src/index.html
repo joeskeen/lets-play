@@ -1,13 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>P2pGame</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Let's play!</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="assets/font-awesome-svgs/solid/dice.svg"
+    />
+    <script>
+      if (document.location.href.endsWith('.html')) {
+        const correctBaseUrl = /^(.*?)[^\/]+$/.exec(document.location.href)[1];
+        document.location.href = correctBaseUrl;
+      } else {
+        const base = document.querySelector('head base');
+        base.setAttribute('href', document.location.href);
+      }
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
 </html>

@@ -8,7 +8,7 @@ export const requestLoadUser = createAction(userActionType('request-load'));
 
 export type RequestEditUserAction = ReturnType<typeof requestEditUser>;
 export const requestEditUser = createAction(
-  userActionType('edit'),
+  userActionType('requestEdit'),
   props<{ mandatory: boolean }>()
 );
 

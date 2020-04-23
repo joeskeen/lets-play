@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { IUser } from './user/user';
 import { Store, select } from '@ngrx/store';
 import { AppState } from './global/app.reducer';
@@ -10,6 +10,7 @@ import { getUser } from './user/user.reducer';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnInit {
   readonly user$: Observable<IUser>;

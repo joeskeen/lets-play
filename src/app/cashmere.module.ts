@@ -10,6 +10,7 @@ import {
   PopModule,
   AccordionModule,
   ListModule,
+  ChipModule,
 } from '@healthcatalyst/cashmere';
 
 @NgModule({
@@ -26,6 +27,7 @@ import {
     PopModule,
     AccordionModule,
     ListModule,
+    ChipModule,
   ],
 })
 export class CashmereModule {}

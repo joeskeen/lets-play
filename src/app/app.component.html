@@ -1,15 +1,18 @@
-<hc-navbar [fixedTop]="true">
+<hc-navbar
+  [fixedTop]="true"
+  appIcon="assets/app.svg"
+  brandIcon="assets/font-awesome-svgs/solid/dice.svg"
+>
+  <hc-navbar-link class="prerelease-tag">
+    <hc-chip color="red">Alpha</hc-chip>
+  </hc-navbar-link>
   <div
     class="hc-navbar-username"
     *ngIf="user$ | async; let user"
     (click)="editUser()"
+    [title]="'👤 ' + user.name + '\nEdit your profile'"
   >
-    <img
-      class="avatar-navbar-icon"
-      [src]="user.avatarUrl"
-      [title]="user.name"
-      [alt]="user.name"
-    />
+    <img class="avatar-navbar-icon" [src]="user.avatarUrl" [alt]="user.name" />
   </div>
   <hc-navbar-mobile-menu>
     <hc-list>
@@ -28,19 +31,26 @@
   </hc-navbar-mobile-menu>
 </hc-navbar>
 
-<!-- <div class="content">
-  <div *ngIf="!client" class="initialView">
+<div class="content">
+  <div class="initialView">
+    <!--*ngIf="!client"-->
     <h1>Let's play!</h1>
-    <button hc-button (click)="newSession()">
-      <hc-icon fontSet="fa" fontIcon="fa-plus" class="icon-left"></hc-icon>
-      New Session
+    <button hc-button>
+      <!--(click)="newSession()"-->
+      <hc-icon fontSet="fas" fontIcon="fa-plus" class="icon-left"></hc-icon>
+      New Group
     </button>
-    <button hc-button (click)="joinSession()">
-      <hc-icon fontSet="fa" fontIcon="fa-sign-in" class="icon-left"></hc-icon>
-      Join Session
+    <button hc-button>
+      <!--(click)="joinSession()"-->
+      <hc-icon
+        fontSet="fas"
+        fontIcon="fa-sign-in-alt"
+        class="icon-left"
+      ></hc-icon>
+      Join Group
     </button>
   </div>
-  <div *ngIf="client">
+  <!-- <div *ngIf="client">
     <hc-form-field>
       <hc-label>Send some data to {{ client.peer.name }}:</hc-label>
       <input hcInput #input />
@@ -54,5 +64,5 @@
     <h4>Last message received from peer:</h4>
     <pre><code>{{ client.receivedMessage$ | async | json }}</code></pre>
     <pre><code>{{ client.peer | json }}</code></pre>
-  </div>
-</div> -->
+  </div> -->
+</div>

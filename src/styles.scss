@@ -1,5 +1,7 @@
-$fa-font-path: 'node_modules/font-awesome/fonts';
-@import '~font-awesome/scss/font-awesome';
+$fa-font-path: 'node_modules/@fortawesome/fontawesome-free/webfonts';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/solid';
 
 $FontPathOpenSans: 'node_modules/npm-font-open-sans/fonts';
 @import '~npm-font-open-sans/open-sans';
@@ -9,10 +11,6 @@ $hc-icons-font-path: 'node_modules/@healthcatalyst/cashmere/hcicons';
 
 @import '~@healthcatalyst/cashmere/scss/cashmere';
 @import '~@healthcatalyst/cashmere/scss/colors';
-
-hc-navbar .navbar-brand {
-  display: none !important;
-}
 
 .custom-toast {
   border-radius: 5px;
