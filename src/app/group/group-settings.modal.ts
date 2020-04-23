@@ -57,6 +57,7 @@ export class GroupSettingsModal implements OnInit {
     supremeLeader: new FormControl(null, [Validators.required]),
   } as Record<keyof IGroup, FormControl>);
   readonly group$: Observable<IGroup>;
+  private groupMembers: IUser[] = [];
 
   constructor(
     private activeModal: ActiveModal<GroupSettingsModalData>,
@@ -67,6 +68,7 @@ export class GroupSettingsModal implements OnInit {
 
   ngOnInit() {
     this.activeModal.data.group.subscribe((group) => {
+      this.groupMembers = group.users;
       this.groupForm.patchValue({
         groupName: group.groupName,
         governmentType: group.governmentType,
@@ -92,7 +94,13 @@ export class GroupSettingsModal implements OnInit {
   async addUser() {}
 
   async saveGroup() {
-    this.activeModal.close(this.groupForm.value);
+    this.activeModal.close({
+      ...this.groupForm.value,
+      supremeLeader:
+        this.groupMembers.find(
+          (u) => u.uniqueId === this.groupForm.controls.supremeLeader.value
+        ) || this.activeModal.data.user,
+    });
   }
 
   cancel() {
