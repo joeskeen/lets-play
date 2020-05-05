@@ -6,24 +6,40 @@ import { updateUser } from '../user/user.actions';
 import {
   updateGroupUser,
   updateGroup,
-  requestAddUser,
+  requestAddMembers,
   requestCreateGroup,
   requestEditGroup,
+  requestJoinGroup,
 } from './group.actions';
-import { map, filter, withLatestFrom, switchMap, first } from 'rxjs/operators';
+import {
+  map,
+  filter,
+  withLatestFrom,
+  switchMap,
+  first,
+  tap,
+} from 'rxjs/operators';
 import { ModalService } from '@healthcatalyst/cashmere';
 import {
-  GroupSettingsModal,
+  GroupSettingsComponent,
   GroupSettingsModalData,
-} from './group-settings.modal';
+} from './group-settings/group-settings.component';
 import { getGroup } from './group.reducer';
+import { AddGroupMembersModal } from './add-group-members/add-group-members.modal';
+import { RandomNameService } from 'src/shared/random-name.service';
+import { from } from 'rxjs';
+import { IGroup } from './group';
+import { TempSharedStorageService } from 'src/shared/temp-shared-storage.service';
+import { JoinGroupModal } from './join-group/join-group.modal';
 
 @Injectable()
 export class GroupEffects {
   constructor(
     private state: Store<AppState>,
     private actions: Actions,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private randomNameService: RandomNameService,
+    private tempStorage: TempSharedStorageService
   ) {}
 
   readonly updateUser$ = createEffect(
@@ -38,47 +54,50 @@ export class GroupEffects {
   readonly addUserOnGroupUpdateIfOnlyOneUser$ = createEffect(() =>
     this.actions.pipe(
       ofType(updateGroup),
-      filter((a) => a.group.users.length === 1),
-      map(() => requestAddUser())
+      filter((a) => a.group?.users?.length === 1),
+      map(() => requestAddMembers())
     )
   );
 
-  readonly requestCreateGroup$ = createEffect(() =>
+  readonly addGroupCodeIfMissing$ = createEffect(() =>
     this.actions.pipe(
-      ofType(requestCreateGroup),
+      ofType(updateGroup),
       withLatestFrom(this.state),
-      switchMap(([_, state]) =>
-        this.modalService
-          .open(GroupSettingsModal, {
-            data: {
-              new: true,
-              user: state.user,
-              group: this.state.select(getGroup),
-            } as GroupSettingsModalData,
-          })
-          .result.pipe(first())
+      filter(
+        ([a, s]) =>
+          s.group.users.length && s.group.supremeLeader && !a.group.joinCode
       ),
-      map((g) => updateGroup(g))
+      switchMap((_) => from(this.randomNameService.getRandomName())),
+      tap((n) => this.tempStorage.set(n, {})),
+      map((n) =>
+        updateGroup({ group: ({ joinCode: n } as Partial<IGroup>) as IGroup })
+      )
     )
   );
 
-  readonly requestEditGroup$ = createEffect(() =>
-    this.actions.pipe(
-      ofType(requestEditGroup),
-      withLatestFrom(this.state),
-      switchMap(([_, state]) =>
-        this.modalService
-          .open(GroupSettingsModal, {
-            size: 'lg',
-            data: {
-              new: false,
-              user: state.user,
-              group: this.state.select(getGroup),
-            } as GroupSettingsModalData,
-          })
-          .result.pipe(first())
+  readonly addMembers$ = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(requestAddMembers),
+        withLatestFrom(this.state),
+        filter(([_, s]) => s.global.isUserSupremeLeader),
+        switchMap(
+          () =>
+            this.modalService.open(AddGroupMembersModal, { size: 'md' }).result
+        )
       ),
-      map((g) => updateGroup(g))
-    )
+    { dispatch: false }
+  );
+
+  readonly joinGroup$ = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(requestJoinGroup),
+        withLatestFrom(this.state),
+        switchMap(
+          () => this.modalService.open(JoinGroupModal, { size: 'md' }).result
+        )
+      ),
+    { dispatch: false }
   );
 }

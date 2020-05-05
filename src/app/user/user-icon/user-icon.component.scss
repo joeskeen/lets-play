@@ -1,0 +1,12 @@
+.icon-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar {
+    width: 100px;
+    border-radius: 50px;
+    margin-bottom: 5px;
+}

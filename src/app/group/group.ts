@@ -8,6 +8,7 @@ export interface IGroup {
   supremeLeader: IUser;
   governmentType: GovernmentType;
   activeInitiatives: IInitiative[];
+  joinCode?: string;
 }
 
 export interface IInitiative {

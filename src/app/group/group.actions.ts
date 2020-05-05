@@ -6,13 +6,15 @@ const groupActionKey = (type: string) => `group:${type}`;
 
 export const requestCreateGroup = createAction(groupActionKey('requestCreate'));
 export const requestEditGroup = createAction(groupActionKey('requestEdit'));
+export const requestCancelEditGroup = createAction(groupActionKey('requestCancelEdit'));
 export const requestJoinGroup = createAction(groupActionKey('requestJoin'));
+export type UpdateGroupAction = ReturnType<typeof updateGroup>;
 export const updateGroup = createAction(
   groupActionKey('update'),
   props<{ group: IGroup }>()
 );
 
-export const requestAddUser = createAction(groupActionKey('requestAddNewUser'));
+export const requestAddMembers = createAction(groupActionKey('requestAddMembers'));
 export const requestRemoveUser = createAction(
   groupActionKey('requestRemoveUser'),
   props<{ user: IUser }>()

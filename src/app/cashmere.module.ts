@@ -11,10 +11,14 @@ import {
   AccordionModule,
   ListModule,
   ChipModule,
+  DrawerModule,
+  TileModule,
 } from '@healthcatalyst/cashmere';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   exports: [
+    CommonModule,
     ModalModule,
     FormFieldModule,
     InputModule,
@@ -28,6 +32,8 @@ import {
     AccordionModule,
     ListModule,
     ChipModule,
+    DrawerModule,
+    TileModule
   ],
 })
 export class CashmereModule {}

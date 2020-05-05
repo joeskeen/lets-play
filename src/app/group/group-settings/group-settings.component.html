@@ -1,0 +1,25 @@
+<div>
+  <h3>Group Settings</h3>
+  <div [formGroup]="groupForm" class="form">
+    <hc-form-field>
+      <hc-label>Group name:</hc-label>
+      <input hcInput formControlName="groupName" />
+    </hc-form-field>
+    <hc-label>Group supreme leader:</hc-label>
+    <app-user-icon [user]="user$ | async"></app-user-icon>
+    <hc-form-field *ngIf="false">
+      <hc-label>Group government type:</hc-label>
+      <input hcInput formControlName="governmentType" />
+    </hc-form-field>
+  </div>
+  <div>
+    <button hc-button buttonStyle="secondary" (click)="cancel()" class="cancel">Cancel</button>
+    <button
+      hc-button
+      [disabled]="groupForm.invalid || groupForm.pristine || groupForm.disabled"
+      (click)="saveGroup()"
+    >
+      Save
+    </button>
+  </div>
+</div>

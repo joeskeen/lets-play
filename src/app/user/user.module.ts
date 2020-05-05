@@ -8,6 +8,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { UserReducer } from './user.reducer';
 import { UserEffects } from './user.effects';
 import { StorageModule } from '@ngx-pwa/local-storage';
+import { UserIconComponent } from './user-icon/user-icon.component';
 
 const userFeatureKey = 'user';
 
@@ -22,8 +23,8 @@ const userFeatureKey = 'user';
     EffectsModule.forFeature([UserEffects]),
   ],
   providers: [UserEffects],
-  declarations: [UserSetupModal],
-  exports: [UserSetupModal],
+  declarations: [UserSetupModal, UserIconComponent],
+  exports: [UserSetupModal, UserIconComponent],
   entryComponents: [UserSetupModal],
 })
 export class UserModule {}

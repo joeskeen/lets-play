@@ -31,23 +31,40 @@
   </hc-navbar-mobile-menu>
 </hc-navbar>
 
-<div class="content">
-  <div class="initialView">
-    <h1>Let's play!</h1>
-    <button hc-button (click)="createGroup()">
-      <hc-icon fontSet="fas" fontIcon="fa-plus" class="icon-left"></hc-icon>
-      New Group
-    </button>
-    <button hc-button (click)="joinGroup()">
-      <hc-icon
-        fontSet="fas"
-        fontIcon="fa-sign-in-alt"
-        class="icon-left"
-      ></hc-icon>
-      Join Group
-    </button>
-  </div>
-  <!-- <div *ngIf="client">
+<div class="hc-drawer-container" *ngIf="group$ | async; let group">
+  <hc-drawer-container>
+    <hc-drawer align="left" #chatDrawer [mode]="'over'">
+      <!-- TODO: chat -->
+    </hc-drawer>
+    <hc-drawer #groupSettingsDrawer align="right" [opened]="group.editing || false" [mode]="'over'">
+      <app-group-settings></app-group-settings>
+    </hc-drawer>
+
+    <div class="content">
+      <div *ngIf="!group?.groupName || !group.users?.length" class="initialView">
+        <h1>Let's play!</h1>
+        <button hc-button (click)="createGroup()">
+          <hc-icon fontSet="fas" fontIcon="fa-plus" class="icon-left"></hc-icon>
+          New Group
+        </button>
+        <button hc-button (click)="joinGroup()">
+          <hc-icon
+            fontSet="fas"
+            fontIcon="fa-sign-in-alt"
+            class="icon-left"
+          ></hc-icon>
+          Join Group
+        </button>
+      </div>
+      <hc-tile *ngIf="group?.groupName && group.users?.length">
+        <h3>{{group.groupName}}</h3>
+        <app-group-members></app-group-members>
+      </hc-tile>
+    </div>
+  </hc-drawer-container>
+</div>
+
+<!-- <div *ngIf="client">
     <hc-form-field>
       <hc-label>Send some data to {{ client.peer.name }}:</hc-label>
       <input hcInput #input />
@@ -62,4 +79,3 @@
     <pre><code>{{ client.receivedMessage$ | async | json }}</code></pre>
     <pre><code>{{ client.peer | json }}</code></pre>
   </div> -->
-</div>

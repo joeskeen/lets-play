@@ -118,7 +118,12 @@ export class ConnectionManagerService {
     this.clients = this.clients.filter((c) => c.peer.uniqueId !== peerId);
   }
 
-  private addClient(client: RtcClient) {
+  async connectClients(clientA: RtcClient, clientB: RtcClient) {
+    const a = this.getClient(clientA.peer.uniqueId);
+    a.sendMessage({ type: 'connect-to-user', data:{ peerId: clientB.peer.uniqueId, middleManId: this.user.uniqueId }});
+  }
+
+  addClient(client: RtcClient) {
     this.clients.push(client);
 
     // when I receive a message, let Redux know
@@ -158,6 +163,17 @@ export class ConnectionManagerService {
         map((m) => m as IMessage<string>)
       )
       .subscribe((m) => this.removePeer(m.data));
+
+    // when I'm told to connect to a user, I oblige
+    client.receivedMessage$
+      .pipe(
+        filter((m) => m.type === 'connect-to-user'),
+        map((m) => m as IMessage<{ peerId: string; middleManId: string }>),
+        filter((m) => !this.isConnectedToPeer(m.data.peerId))
+      )
+      .subscribe((m) =>
+        this.createConnectionVia(m.data.peerId, m.data.middleManId)
+      );
   }
 
   private async respondToConnectionInvite(

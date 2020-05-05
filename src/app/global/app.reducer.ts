@@ -1,12 +1,30 @@
-import { createReducer } from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
 import { UserState } from '../user/user.reducer';
 import { GroupState } from '../group/group.reducer';
+import {
+  updateGroup,
+  resetGroupUsers,
+  addUser,
+  removeUser,
+} from '../group/group.actions';
+import { updateUserIsSupremeLeader } from './app.actions';
 
 export interface AppState {
   user?: UserState;
   group?: GroupState;
+  global?: GlobalState;
 }
 
-export const initialState: AppState = {};
+export interface GlobalState {
+  isUserSupremeLeader: boolean;
+}
 
-export const AppReducer = createReducer(initialState);
+export const initialState: GlobalState = { isUserSupremeLeader: false };
+
+export const appReducer = createReducer(
+  initialState,
+  on(updateUserIsSupremeLeader, (state, action) => ({
+    ...state,
+    isUserSupremeLeader: action.isUserSupremeLeader
+  }))
+);

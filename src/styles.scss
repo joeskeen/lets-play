@@ -12,6 +12,20 @@ $hc-icons-font-path: 'node_modules/@healthcatalyst/cashmere/hcicons';
 @import '~@healthcatalyst/cashmere/scss/cashmere';
 @import '~@healthcatalyst/cashmere/scss/colors';
 
+.hc-drawer {
+  background-color: $slate-gray-200;
+  padding: 63px 10px 10px 10px;
+  text-align: left;
+  
+  &[align='left'] {
+    border-right: solid $dark-blue 2px;
+  }
+  
+  &[align='right'] {
+    border-left: solid $dark-blue 2px;
+  }
+}
+
 .custom-toast {
   border-radius: 5px;
   color: white;

@@ -1,0 +1,8 @@
+<div *ngIf="group$ | async; let group" class="group-container">
+    <ng-container *ngFor="let user of group.users">
+        <app-user-icon [user]="user"></app-user-icon>
+    </ng-container>
+    <ng-container *ngIf="isSupremeLeader$ | async">
+        <button hc-button (click)="addMembers()">Add members</button>
+    </ng-container>
+</div>

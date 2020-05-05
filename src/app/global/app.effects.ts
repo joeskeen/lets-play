@@ -4,8 +4,18 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { withLatestFrom, map, filter, tap } from 'rxjs/operators';
 import { AppState } from './app.reducer';
 import { Store } from '@ngrx/store';
-import { connectionMessageReceived } from './app.actions';
+import {
+  connectionMessageReceived,
+  updateUserIsSupremeLeader,
+} from './app.actions';
 import { TypedAction } from '@ngrx/store/src/models';
+import { updateUser } from '../user/user.actions';
+import {
+  updateGroup,
+  resetGroupUsers,
+  addUser,
+  removeUser,
+} from '../group/group.actions';
 
 @Injectable()
 export class AppEffects {
@@ -42,8 +52,24 @@ export class AppEffects {
     this.actions.pipe(
       ofType(connectionMessageReceived),
       filter((a) => a.message.type === '@ngrx-action'),
+      tap((action) => console.log('replaying action', action)),
       // TODO: this probably will go horribly wrong if further filtering isn't done
       map((a) => a.message.data.action as TypedAction<any>)
+    )
+  );
+
+  readonly userIsSupremeLeader = createEffect(() =>
+    this.actions.pipe(
+      ofType(updateUser, updateGroup, resetGroupUsers, addUser, removeUser),
+      withLatestFrom(this.store),
+      tap(console.log),
+      map(([_, state]) =>
+        updateUserIsSupremeLeader({
+          isUserSupremeLeader:
+            state.group?.supremeLeader &&
+            state.user?.uniqueId === state.group.supremeLeader.uniqueId,
+        })
+      )
     )
   );
 }

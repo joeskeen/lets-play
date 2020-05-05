@@ -1,0 +1,11 @@
+<hc-modal>
+  <hc-modal-header>
+    Add group members
+  </hc-modal-header>
+  <hc-modal-body>
+      <p>Your group code is: <code>{{ (group$ | async).joinCode }}</code></p>
+  </hc-modal-body>
+  <hc-modal-footer>
+      <button hc-button (click)="activeModal.close()">Done</button>
+  </hc-modal-footer>
+</hc-modal>

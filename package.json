@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve -o --environment dev",
-    "build": "ng build",
+    "start": "ng serve -o --configuration=dev",
+    "build": "ng build --configuration=dev",
     "test": "ng test",
     "lint": "ng lint",
     "publish": "ts-node -O {\\\"module\\\":\\\"commonjs\\\"} scripts/publish"

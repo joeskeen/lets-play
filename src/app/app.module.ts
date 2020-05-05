@@ -14,8 +14,11 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
-import { AppReducer } from './global/app.reducer';
+import { appReducer } from './global/app.reducer';
 import { GroupModule } from './group/group.module';
+import { AppEffects } from './global/app.effects';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,11 +29,12 @@ import { GroupModule } from './group/group.module';
     AppRoutingModule,
     WebrtcModule,
     ClipboardModule,
+    HttpClientModule,
     UserModule,
     GroupModule,
     ToastsModule,
-    StoreModule.forRoot([AppReducer]),
-    EffectsModule.forRoot([]),
+    StoreModule.forRoot({ global: appReducer}),
+    EffectsModule.forRoot([AppEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,

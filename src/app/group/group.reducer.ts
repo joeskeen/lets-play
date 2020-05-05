@@ -4,7 +4,7 @@ import * as actions from './group.actions';
 import { ISelector } from '../redux/selector';
 import { AppState } from '../global/app.reducer';
 
-export type GroupState = IGroup;
+export type GroupState = IGroup & { editing?: boolean; isNew?: boolean; };
 
 export const initialState: GroupState = {
   groupName: '',
@@ -16,6 +16,22 @@ export const initialState: GroupState = {
 
 export const GroupReducer = createReducer(
   initialState,
+  on(actions.requestCreateGroup, state => ({
+    ...state,
+    editing: true,
+    isNew: true
+  })),
+  on(actions.requestEditGroup, state => ({
+    ...state,
+    editing: true,
+    isNew: false
+  })),
+  on(actions.requestCancelEditGroup, state => ({
+    ...state,
+    users: state.isNew ? [] : state.users,
+    editing: false,
+    isNew: undefined,
+  })),
   on(actions.addUser, (state, action) => ({
     ...state,
     users: [
@@ -77,6 +93,8 @@ export const GroupReducer = createReducer(
   on(actions.updateGroup, (state, action) => ({
     ...state,
     ...action.group,
+    editing: false,
+    isNew: undefined
   })),
   on(actions.updateGroupUser, (state, action) => ({
     ...state,

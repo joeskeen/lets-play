@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { Observable, timer, of } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
+import {
+  switchMap,
+  catchError,
+  distinctUntilChanged,
+  map,
+} from 'rxjs/operators';
 import { ProxyableService } from './proxyable-service';
 
 const defaultWatchInterval = 10 * 1000;
@@ -15,7 +20,7 @@ export class TempSharedStorageService extends ProxyableService {
   readonly watchInterval: number;
 
   constructor(private httpClient: HttpClient) {
-    super(environment?.nameServer, environment?.corsProxy);
+    super(environment?.tempSharedStorage?.endpoint, environment?.corsProxy);
     this.watchInterval =
       environment?.tempSharedStorage?.watchInterval || defaultWatchInterval;
   }
@@ -23,8 +28,14 @@ export class TempSharedStorageService extends ProxyableService {
   watch<T>(path: string, watchInterval?: number): Observable<T> {
     const url = this.getUrl(path);
     return timer(0, watchInterval || this.watchInterval).pipe(
-      switchMap(() => this.httpClient.get(url)),
-      catchError(() => of(null))
+      switchMap(() => {
+        return this.httpClient.get(url, {
+          observe: 'body',
+          responseType: 'text',
+        }).pipe(catchError(() => of(null)));
+      }),
+      distinctUntilChanged(),
+      map((json) => json ? JSON.parse(json) : null)
     );
   }
 
@@ -38,15 +49,11 @@ export class TempSharedStorageService extends ProxyableService {
 
   async set<T>(path: string, value: T): Promise<void> {
     await this.httpClient
-      .post(
-        this.getUrl(path),
-        value,
-        { responseType: 'text' }
-      )
+      .post(this.getUrl(path), value, { responseType: 'text' })
       .toPromise();
   }
 
   async delete(path: string): Promise<void> {
-      await this.httpClient.delete(this.getUrl(path)).toPromise();
+    await this.httpClient.delete(this.getUrl(path)).toPromise();
   }
 }
