@@ -2,6 +2,7 @@ import * as childProcess from 'child_process';
 import { join } from 'path';
 import * as project from '../angular.json';
 import * as chalk from 'chalk';
+import {existsSync, copyFileSync, readFileSync} from 'fs';
 
 console.log(
   chalk.green(
@@ -16,6 +17,11 @@ runCommand(
   { stdio: 'inherit' }
 );
 const distPath = join(__dirname, '../dist/', project.defaultProject);
+const cnamePath = join(__dirname, '../CNAME');
+if (existsSync(cnamePath)) {
+  console.log(chalk.gray(`using existing CNAME entry '${readFileSync(cnamePath)}'...`));
+  copyFileSync(cnamePath, join(distPath, 'CNAME'));
+}
 runCommand('git init', { stdio: 'inherit', cwd: distPath });
 runCommand('git add .', { stdio: 'inherit', cwd: distPath });
 runCommand('git commit -m "update GitHub Pages"', {

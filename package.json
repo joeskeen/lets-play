@@ -1,13 +1,13 @@
 {
-  "name": "p2p-game",
+  "name": "lets-play",
   "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve -o",
+    "start": "ng serve -o --environment dev",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
     "publish": "ts-node -O {\\\"module\\\":\\\"commonjs\\\"} scripts/publish"
   },
   "private": true,
