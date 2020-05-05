@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { Observable, timer, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
+import { ProxyableService } from './proxyable-service';
 
 const defaultWatchInterval = 10 * 1000;
 
@@ -10,18 +11,11 @@ const defaultWatchInterval = 10 * 1000;
  * see environment.ts for configuration instructions
  */
 @Injectable({ providedIn: 'root' })
-export class TempSharedStorageService {
-  readonly endpoint: string;
-  readonly corsProxy: string;
+export class TempSharedStorageService extends ProxyableService {
   readonly watchInterval: number;
 
   constructor(private httpClient: HttpClient) {
-    this.endpoint = this.normalizeConfigUrl(
-      environment?.tempSharedStorage?.endpoint
-    );
-    this.corsProxy = this.normalizeConfigUrl(
-      environment?.tempSharedStorage?.corsProxy
-    );
+    super(environment?.nameServer, environment?.corsProxy);
     this.watchInterval =
       environment?.tempSharedStorage?.watchInterval || defaultWatchInterval;
   }
@@ -54,16 +48,5 @@ export class TempSharedStorageService {
 
   async delete(path: string): Promise<void> {
       await this.httpClient.delete(this.getUrl(path)).toPromise();
-  }
-
-  private getUrl(path: string): string {
-    return [this.corsProxy, this.endpoint, path].join('');
-  }
-
-  private normalizeConfigUrl(url: string) {
-    if (!url) {
-      return '';
-    }
-    return url.replace(/\/?$/, '/');
   }
 }
