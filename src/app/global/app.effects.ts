@@ -9,13 +9,19 @@ import {
   updateUserIsSupremeLeader,
 } from './app.actions';
 import { TypedAction } from '@ngrx/store/src/models';
-import { updateUser } from '../user/user.actions';
+import { updateUser, requestEditUser } from '../user/user.actions';
 import {
   updateGroup,
   resetGroupUsers,
   addUser,
-  removeUser,
+  removeUser
 } from '../group/group.actions';
+
+// actions that MUST NOT be broadcast
+const actionBroadcastBlacklist: Array<string | RegExp> = [
+  ...[updateUser, updateUserIsSupremeLeader].map((a) => a.type),
+  /^(.*?\:)?request/gi,
+];
 
 @Injectable()
 export class AppEffects {
@@ -30,6 +36,7 @@ export class AppEffects {
       this.actions.pipe(
         withLatestFrom(this.store),
         filter(
+          // only broadcast from the host
           ([_, state]) =>
             state.user &&
             state.user.uniqueId &&
@@ -38,6 +45,14 @@ export class AppEffects {
             state.group.users.length > 1 &&
             state.group.supremeLeader.uniqueId === state.user.uniqueId
         ),
+        filter(
+          // filter out blacklisted actions
+          ([action]) =>
+            !actionBroadcastBlacklist.find((b) =>
+              typeof b === 'string' ? b === action.type : b.test(action.type)
+            )
+        ),
+        // tap(([action]) => console.log(`Broadcasting ${action.type}...`)),
         tap(([action, state]) =>
           this.connectionManager.broadcast({
             type: '@ngrx-action',

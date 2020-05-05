@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { createEffect, Actions, ofType } from '@ngrx/effects';
-import { switchMap, first, map, withLatestFrom, tap } from 'rxjs/operators';
+import { switchMap, first, map, withLatestFrom, tap, filter } from 'rxjs/operators';
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { Observable } from 'rxjs';
 import { ModalService } from '@healthcatalyst/cashmere';
@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import { UserState, getUser } from './user.reducer';
 import { AppState } from '../global/app.reducer';
 import { updateGroupUser } from '../group/group.actions';
+import { ConnectionManagerService } from '../webrtc/connection-manager.service';
 
 const userStorageKey = 'global:user';
 
@@ -20,7 +21,8 @@ export class UserEffects {
     private actions$: Actions,
     private storageMap: StorageMap,
     private store: Store<AppState>,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private connectionManager: ConnectionManagerService
   ) {}
 
   readonly requestLoadUser = createEffect(() =>
@@ -56,6 +58,20 @@ export class UserEffects {
         switchMap((u) => this.storageMap.set(userStorageKey, u.user))
       ),
     { dispatch: false }
+  );
+
+  readonly updateGroupUser = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateUser),
+      withLatestFrom(this.store),
+      filter(([_, state]) => !state.global.isUserSupremeLeader),
+      tap(([action, state]) => {
+        this.connectionManager.broadcast({
+          type: '@ngrx-action',
+          data: { originatorId: state.user.uniqueId, action: updateGroupUser({ user: action.user }) },
+        });
+      })
+    ), {dispatch: false}
   );
 
   readonly updateUserInGroup = createEffect(() =>
