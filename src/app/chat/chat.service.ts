@@ -5,7 +5,7 @@ import { IUser } from '../user/user';
 import { filter, scan, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HcToasterService } from '@healthcatalyst/cashmere';
-import { ChatToast } from '../toasts/chat.toast';
+import { CustomImageToast } from '../toasts/custom-image.toast';
 
 const chatHistoryLimit = 100;
 
@@ -36,9 +36,10 @@ export class ChatService {
     client.receivedMessage$
       .pipe(filter((m) => m.type === 'chat'))
       .subscribe((m) => {
-        this.toastService.addToast({ type: 'custom' }, ChatToast, {
-          message: m.data,
-          user: client.peer,
+        this.toastService.addToast({ type: 'custom' }, CustomImageToast, {
+          header: `New message from ${client.peer.name}`,
+          body: m.data,
+          imageUrl: client.peer.avatarUrl
         });
       });
   }

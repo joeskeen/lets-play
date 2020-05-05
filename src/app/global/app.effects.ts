@@ -52,7 +52,6 @@ export class AppEffects {
     this.actions.pipe(
       ofType(connectionMessageReceived),
       filter((a) => a.message.type === '@ngrx-action'),
-      tap((action) => console.log('replaying action', action)),
       // TODO: this probably will go horribly wrong if further filtering isn't done
       map((a) => a.message.data.action as TypedAction<any>)
     )
@@ -62,7 +61,6 @@ export class AppEffects {
     this.actions.pipe(
       ofType(updateUser, updateGroup, resetGroupUsers, addUser, removeUser),
       withLatestFrom(this.store),
-      tap(console.log),
       map(([_, state]) =>
         updateUserIsSupremeLeader({
           isUserSupremeLeader:

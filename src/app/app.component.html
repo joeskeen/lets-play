@@ -6,6 +6,12 @@
   <hc-navbar-link class="prerelease-tag">
     <hc-chip color="red">Alpha</hc-chip>
   </hc-navbar-link>
+  <ng-container *ngIf="group$ | async; let group">
+    <hc-icon *ngIf="group.users.length && group.groupName" 
+      class="hc-navbar-icon" 
+      fontSet="fas" fontIcon="fa-users"
+      [hcPop]="groupView"></hc-icon>
+  </ng-container>
   <div
     class="hc-navbar-username"
     *ngIf="user$ | async; let user"
@@ -27,6 +33,16 @@
         <h4 hcListLine>{{ user.name }}</h4>
         <span hcListLine>Edit your profile</span>
       </hc-list-item>
+      <ng-container *ngIf="group$ | async; let group">
+        <hc-list-item *ngIf="group.groupName && group.users.length" [hcPop]="groupView">
+          <hc-icon
+            fontSet="fas"
+            fontIcon="fa-users"
+            hcListIcon
+          ></hc-icon>
+          <h4 hcListLine>{{ group.groupName }}</h4>
+        </hc-list-item>
+      </ng-container>
     </hc-list>
   </hc-navbar-mobile-menu>
 </hc-navbar>
@@ -63,6 +79,13 @@
     </div>
   </hc-drawer-container>
 </div>
+
+<hc-pop #groupView>
+  <ng-container *ngIf="group$ | async; let group">
+    <h3>{{group.groupName}}</h3>
+    <app-group-members></app-group-members>
+  </ng-container>
+</hc-pop>
 
 <!-- <div *ngIf="client">
     <hc-form-field>

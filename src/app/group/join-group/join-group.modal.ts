@@ -17,9 +17,10 @@ import { first, map, filter } from 'rxjs/operators';
 export class JoinGroupModal {
   readonly groupCodeControl = new FormControl('', [Validators.required]);
   private user: IUser;
+  busy: boolean;
 
   constructor(
-    public activeModal: ActiveModal,
+    public activeModal: ActiveModal<IJoinModalData>,
     private connectionManager: ConnectionManagerService,
     private tempStorage: TempSharedStorageService,
     private toasterService: HcToasterService,
@@ -27,38 +28,49 @@ export class JoinGroupModal {
     private rtcService: RtcService
   ) {
     this.store.pipe(select(getUser)).subscribe((user) => (this.user = user));
+    if (this.activeModal.data?.joinCode) {
+      this.join(this.activeModal.data.joinCode);
+    }
   }
 
-  async join() {
-    const groupCode = this.groupCodeControl.value;
-    const groupConnections = await this.tempStorage.get(groupCode);
-    if (!groupConnections) {
-      this.toasterService.addToast({
-        type: 'alert',
-        header: 'Oops',
-        body: `Couldn't find a group with that code. Double check the code and make sure the host is accepting new members.`,
+  async join(groupCode: string) {
+    this.busy = true;
+    try {
+      const groupConnections = await this.tempStorage.get(groupCode);
+      if (!groupConnections) {
+        this.toasterService.addToast({
+          type: 'alert',
+          header: 'Oops',
+          body: `Couldn't find a group with that code. Double check the code and make sure the host is accepting new members.`,
+        });
+        return;
+      }
+      const client = await this.rtcService.create(this.user, async (offer) => {
+        const storageKey = `${groupCode}/${this.user.uniqueId}`;
+        await this.tempStorage.set(storageKey, {offer});
+        const response = await this.tempStorage
+          .watch<IHandshake>(storageKey)
+          .pipe(
+            map((r) => r.hostResponse),
+            filter((r) => !!r),
+            first()
+          )
+          .toPromise();
+        return response;
       });
-      return;
+      this.connectionManager.addClient(client);
+      this.activeModal.close();
+    } finally {
+      this.busy = false;
     }
-    const client = await this.rtcService.create(this.user, async (offer) => {
-      const storageKey = `${groupCode}/${this.user.uniqueId}`;
-      await this.tempStorage.set(storageKey, {offer});
-      const response = await this.tempStorage
-        .watch<IHandshake>(storageKey)
-        .pipe(
-          map((r) => r.hostResponse),
-          filter((r) => !!r),
-          first()
-        )
-        .toPromise();
-      return response;
-    });
-    this.connectionManager.addClient(client);
-    this.activeModal.close();
   }
 }
 
 interface IHandshake {
   offer: RTCSessionDescriptionInit;
   hostResponse?: RTCSessionDescriptionInit;
+}
+
+export interface IJoinModalData {
+  joinCode: string;
 }

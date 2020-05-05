@@ -3,7 +3,13 @@
     Add group members
   </hc-modal-header>
   <hc-modal-body>
+    <ng-container *ngIf="group$ | async; let group">
       <p>Your group code is: <code>{{ (group$ | async).joinCode }}</code></p>
+      <span><em>Note: you must keep this window open to accept new group members.</em></span>
+      <div class="group-members">
+        <img *ngFor="let user of group.users" [src]="user.avatarUrl" class="avatar-icon" [title]="user.name" />
+      </div>
+    </ng-container>
   </hc-modal-body>
   <hc-modal-footer>
       <button hc-button (click)="activeModal.close()">Done</button>

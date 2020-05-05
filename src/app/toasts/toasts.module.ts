@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { ChatToast } from './chat.toast';
+import { CustomImageToast } from './custom-image.toast';
 
 @NgModule({
   imports: [],
-  declarations: [ChatToast],
-  exports: [ChatToast],
-  entryComponents: [ChatToast],
+  declarations: [CustomImageToast],
+  exports: [CustomImageToast],
+  entryComponents: [CustomImageToast],
 })
 export class ToastsModule {}

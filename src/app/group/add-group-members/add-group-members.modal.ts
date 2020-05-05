@@ -20,9 +20,10 @@ import { ConnectionManagerService } from 'src/app/webrtc/connection-manager.serv
 import { RtcService } from 'src/app/webrtc/rtc.service';
 import { IUser } from 'src/app/user/user';
 import { getUser } from 'src/app/user/user.reducer';
-import { ActiveModal } from '@healthcatalyst/cashmere';
+import { ActiveModal, HcToasterService } from '@healthcatalyst/cashmere';
 import { IMessage } from 'src/app/webrtc/messages';
 import { connectionMessageReceived } from 'src/app/global/app.actions';
+import { CustomImageToast } from 'src/app/toasts/custom-image.toast';
 
 type UserOfferHash = Record<
   string,
@@ -47,7 +48,8 @@ export class AddGroupMembersModal implements OnInit, OnDestroy {
     private tempDataService: TempSharedStorageService,
     private connectionManager: ConnectionManagerService,
     private rtcService: RtcService,
-    public activeModal: ActiveModal
+    public activeModal: ActiveModal,
+    private toasterService: HcToasterService
   ) {
     this.group$ = store.select(getGroup);
     this.user$ = store.select(getUser);
@@ -59,10 +61,11 @@ export class AddGroupMembersModal implements OnInit, OnDestroy {
         withLatestFrom(this.user$),
         takeUntil(this.destroyed),
         filter(([g]) => !!g.joinCode),
-        tap(([g, u]) => {
+        tap(async ([g, u]) => {
           this.joinCode = g.joinCode;
           this.user = u;
           this.group = g;
+          await this.tempDataService.set(g.joinCode, {});
         }),
         switchMap(([g]) =>
           this.tempDataService.watch<UserOfferHash>(g.joinCode)
@@ -97,13 +100,16 @@ export class AddGroupMembersModal implements OnInit, OnDestroy {
             data: { originatorId: this.user.uniqueId, action: updateGroup({ group: this.group }) },
           };
           client.sendMessage(message);
+          await this.tempDataService.delete(`${this.joinCode}/${uid}`);
         });
       });
   }
 
-  async ngOnDestroy() {
+async ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
-    await this.tempDataService.delete(this.joinCode);
+    try {
+      await this.tempDataService.delete(this.joinCode);
+    } catch { /* ignore clean-up errors */ }
   }
 }

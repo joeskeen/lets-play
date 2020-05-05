@@ -10,6 +10,7 @@ import {
   requestCreateGroup,
   requestEditGroup,
   requestJoinGroup,
+  addUser,
 } from './group.actions';
 import {
   map,
@@ -19,7 +20,7 @@ import {
   first,
   tap,
 } from 'rxjs/operators';
-import { ModalService } from '@healthcatalyst/cashmere';
+import { ModalService, HcToasterService } from '@healthcatalyst/cashmere';
 import {
   GroupSettingsComponent,
   GroupSettingsModalData,
@@ -31,6 +32,7 @@ import { from } from 'rxjs';
 import { IGroup } from './group';
 import { TempSharedStorageService } from 'src/shared/temp-shared-storage.service';
 import { JoinGroupModal } from './join-group/join-group.modal';
+import { CustomImageToast } from '../toasts/custom-image.toast';
 
 @Injectable()
 export class GroupEffects {
@@ -39,7 +41,8 @@ export class GroupEffects {
     private actions: Actions,
     private modalService: ModalService,
     private randomNameService: RandomNameService,
-    private tempStorage: TempSharedStorageService
+    private tempStorage: TempSharedStorageService,
+    private toasterService: HcToasterService
   ) {}
 
   readonly updateUser$ = createEffect(
@@ -84,6 +87,40 @@ export class GroupEffects {
         switchMap(
           () =>
             this.modalService.open(AddGroupMembersModal, { size: 'md' }).result
+        )
+      ),
+    { dispatch: false }
+  );
+
+  readonly memberAdded = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(addUser),
+        withLatestFrom(this.state),
+        filter(([a, s]) => a.user.uniqueId !== s.user.uniqueId),
+        tap(([action]) =>
+          this.toasterService.addToast({ type: 'custom' }, CustomImageToast, {
+            header: `New group member`,
+            body: `${action.user.name} has joined your group!`,
+            imageUrl: action.user.avatarUrl,
+          })
+        )
+      ),
+    { dispatch: false }
+  );
+
+  readonly joined = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(addUser),
+        withLatestFrom(this.state),
+        filter(([a, s]) => a.user.uniqueId === s.user.uniqueId),
+        tap(([action, state]) =>
+          this.toasterService.addToast({ type: 'custom' }, CustomImageToast, {
+            header: `Welcome`,
+            body: `You have joined the ${state.group.groupName} group!`,
+            imageUrl: action.user.avatarUrl,
+          })
         )
       ),
     { dispatch: false }

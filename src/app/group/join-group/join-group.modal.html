@@ -1,14 +1,20 @@
 <hc-modal>
     <hc-modal-header>Join Group</hc-modal-header>
     <hc-modal-body>
-        <hc-form-field>
-            <hc-label>Enter your group's join code:</hc-label>
-            <input hcInput [formControl]="groupCodeControl" />
-            <hc-error>Group code is required.</hc-error>
-        </hc-form-field>
+        <div *ngIf="busy" class="spinner-container">
+            <hc-progress-spinner [isCentered]="true" [diameter]="100"></hc-progress-spinner>
+            <span class="bottom">Joining the group...</span>
+        </div>
+        <div *ngIf="!busy">
+            <hc-form-field>
+                <hc-label>Enter your group's join code:</hc-label>
+                <input hcInput [formControl]="groupCodeControl" />
+                <hc-error>Group code is required.</hc-error>
+            </hc-form-field>
+        </div>
     </hc-modal-body>
     <hc-modal-footer>
         <button hc-button buttonStyle="secondary" (click)="activeModal.dismiss()">Cancel</button>
-        <button hc-button [disabled]="groupCodeControl.invalid" (click)="join()">Join</button>
+        <button hc-button [disabled]="groupCodeControl.invalid || busy || false" (click)="join(groupCodeControl.value)">Join</button>
     </hc-modal-footer>
 </hc-modal>

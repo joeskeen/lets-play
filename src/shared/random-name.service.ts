@@ -7,7 +7,6 @@ import { environment } from 'src/environments/environment';
 export class RandomNameService extends ProxyableService {
   constructor(private httpClient: HttpClient) {
     super(environment?.nameServer, environment?.corsProxy);
-    console.log('environment', environment);
   }
 
   async getRandomName(): Promise<string> {

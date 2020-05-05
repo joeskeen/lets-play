@@ -5,7 +5,6 @@ export abstract class ProxyableService {
   constructor(endpoint: string, corsProxy: string) {
       this.endpoint = this.normalizeUrl(endpoint);
       this.corsProxy = this.normalizeUrl(corsProxy);
-      console.log(endpoint, corsProxy);
   }
 
   protected getUrl(path?: string): string {
