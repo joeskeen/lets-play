@@ -14,7 +14,10 @@ export const updateGame = createAction(
   props<{ game: Partial<GameState> }>()
 );
 
-export const startGuessing = createAction(gameActionType('startGuessing'));
+export const startGuessing = createAction(
+  gameActionType('startGuessing'),
+  props<{ firstPlayer: IUser }>()
+);
 
 export const startUserTurn = createAction(
   gameActionType('startUserTurn'),

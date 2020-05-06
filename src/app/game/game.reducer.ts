@@ -10,6 +10,7 @@ import {
   startGuessing,
   nextPlayer,
   playerOut,
+  endRound,
 } from './game.actions';
 import { GameState, gameFeatureKey } from './game.state';
 import { AppState } from '../global/app.reducer';
@@ -34,7 +35,7 @@ export const GameReducer = createReducer(
         score: 0,
         guessed: false,
       })),
-      prompts: shuffle(action.prompts),
+      prompts: action.prompts,
     })
   ),
   on(
@@ -51,6 +52,10 @@ export const GameReducer = createReducer(
       };
     }
   ),
+  on(endRound, (state, action): GameState => ({
+    ...state,
+    step: 'ROUND_END',
+  })),
   on(
     revealResponse,
     (state, action): GameState => ({
@@ -99,11 +104,11 @@ export const GameReducer = createReducer(
   ),
   on(
     startGuessing,
-    (state): GameState => {
+    (state, action): GameState => {
       const firstPlayer = shuffle(state.players)[0];
       return {
         ...state,
-        currentTurn: firstPlayer.user,
+        currentTurn: action.firstPlayer,
         step: 'WAITING_FOR_GUESS',
       };
     }

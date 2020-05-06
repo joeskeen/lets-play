@@ -86,7 +86,7 @@
       <ng-container *ngSwitchCase="'ROUND_END'">
         <ng-container *ngTemplateOutlet="playerScores"></ng-container>
         <ng-container
-          *ngIf="isSupremeLeader$ | async; then startGame; else waitingForGame"
+          *ngIf="isSupremeLeader$ | async; then startNextRound; else waitingForNextRound"
         ></ng-container>
         <ng-template #startNextRound>
           <hc-banner [type]="'warning'">

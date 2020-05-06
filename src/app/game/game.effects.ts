@@ -90,15 +90,17 @@ export class GameEffects {
   responseAdded$ = createEffect(() =>
     this.actions.pipe(
       ofType(addResponse),
-      withLatestFrom(this.state.select(getGame)),
-      filter(([_, state]) => state.responses.length === state.players.length),
-      mergeMap(([_, state]) => [
+      withLatestFrom(this.state),
+      filter(([a,s]) => s.global.isUserSupremeLeader),
+      map(([a,s]) => ({ action: a, state: getGame(s) })),
+      filter(({state}) => state.responses.length === state.players.length),
+      mergeMap(({state}) => [
         updateGame({
           game: {
             prompts: shuffle(state.prompts),
           },
         }),
-        startGuessing(),
+        startGuessing({ firstPlayer: shuffle(state.players)[0].user }),
       ])
     )
   );
@@ -133,6 +135,7 @@ export class GameEffects {
               !r.revealed &&
               r.user.uniqueId !== action.guessingUser.uniqueId
           );
+          console.log('remaining responses', remainingResponses);
           if (!remainingResponses.length) {
             const playerResponse = state.responses.find(
               (r) => r.user.uniqueId === action.guessingUser.uniqueId

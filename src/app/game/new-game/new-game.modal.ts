@@ -8,6 +8,7 @@ import { IUser } from 'src/app/user/user';
 import { Subject } from 'rxjs';
 import { getGroup, selector } from 'src/app/group/group.reducer';
 import { map, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import shuffle from 'fast-shuffle';
 
 @Component({
   templateUrl: 'new-game.modal.html',
@@ -38,7 +39,7 @@ export class NewGameModal implements OnDestroy {
           .replace(/\s+/, ' ')
           .trim()
       );
-    this.store.dispatch(startGame({ players: this.users, prompts }));
+    this.store.dispatch(startGame({ players: this.users, prompts: shuffle(prompts) }));
     this.activeModal.close();
   }
 

@@ -34,6 +34,10 @@ export class JoinGroupModal {
   }
 
   async join(groupCode: string) {
+    if (!groupCode) {
+      return;
+    }
+    
     this.busy = true;
     try {
       const groupConnections = await this.tempStorage.get(groupCode);
