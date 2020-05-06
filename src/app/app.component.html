@@ -82,7 +82,7 @@
 <hc-pop #groupView>
   <ng-container *ngIf="group$ | async; let group">
     <h3>{{group.groupName}}</h3>
-    <app-group-members></app-group-members>
+    <app-group-members (dismiss)="groupView.close()"></app-group-members>
   </ng-container>
 </hc-pop>
 

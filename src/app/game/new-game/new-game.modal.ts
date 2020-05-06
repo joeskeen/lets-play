@@ -38,7 +38,7 @@ export class NewGameModal implements OnDestroy {
         l
           .replace(/\s+/, ' ')
           .trim()
-      );
+      ).filter(l => !!l);
     this.store.dispatch(startGame({ players: this.users, prompts: shuffle(prompts) }));
     this.activeModal.close();
   }

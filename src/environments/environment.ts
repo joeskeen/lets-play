@@ -11,7 +11,7 @@ export const environment: IEnvironment = {
   // corsProxy: 'https://cors-anywhere.herokuapp.com/',
   tempSharedStorage: {
     endpoint: 'https://db.neelr.dev/api/5a5f801ef552f04c511b6abd21756b32',
-    watchInterval: 10 * 1000,
+    watchInterval: 10 * 4000,
   },
   nameServer: 'https://frightanic.com/goodies_content/docker-names.php'
 };

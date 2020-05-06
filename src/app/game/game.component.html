@@ -43,7 +43,7 @@
           </hc-banner>
           <hc-form-field>
             <hc-label>Enter your response:</hc-label>
-            <input hcInput [formControl]="responseControl" />
+            <input hcInput [formControl]="responseControl" (keyup.enter)="submitResponse(user)" />
             <hc-error>Input is required.</hc-error>
           </hc-form-field>
           <button hc-button (click)="submitResponse(user)">Submit</button>
@@ -166,7 +166,7 @@
                     buttonStyle="minimal"
                     class="player"
                     [disabled]="game.currentTurn?.uniqueId !== user.uniqueId"
-                    (click)="makeGuess(user, player.user, response)"
+                    (click)="makeGuess(user, player.user, response); guess.close();"
                   >
                     <img class="avatarIcon" [src]="player.user.avatarUrl" />
                     <span>{{ player.user.name }}</span>

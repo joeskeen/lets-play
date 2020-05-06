@@ -23,7 +23,11 @@ import { v4 as uuid } from 'uuid';
             </hc-form-field>
             <hc-form-field>
               <hc-label>Your email:</hc-label>
-              <input hcInput [formControl]="profileForm.controls.email" />
+              <input
+                hcInput
+                [formControl]="profileForm.controls.email"
+                (keyup.enter)="save()"
+              />
               <hc-error *ngIf="profileForm.controls.email.errors?.required">
                 Input is required
               </hc-error>
@@ -105,6 +109,9 @@ export class UserSetupModal implements OnInit {
   }
 
   save() {
+    if (this.profileForm.invalid) {
+      return;
+    }
     const user: IUser = this.profileForm.value;
     if (!user.uniqueId) {
       user.uniqueId = uuid();

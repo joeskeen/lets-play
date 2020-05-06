@@ -71,10 +71,10 @@ export class AddGroupMembersModal implements OnInit, OnDestroy {
       .subscribe((h) => {
         const userIds = Object.keys(h);
         const unacknowledged = userIds.filter(
-          (uid) => !this.acknowledgedConnectionRequests.includes(uid)
+          (uid) => !this.acknowledgedConnectionRequests.includes(h[uid].offer.sdp)
         );
         unacknowledged.forEach(async (uid) => {
-          this.acknowledgedConnectionRequests.push(uid);
+          this.acknowledgedConnectionRequests.push(h[uid].offer.sdp);
           const client = await this.rtcService.join(
             h[uid].offer,
             this.user,

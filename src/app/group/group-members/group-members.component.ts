@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { AppState } from 'src/app/global/app.reducer';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -14,6 +14,10 @@ import { requestAddMembers } from '../group.actions';
 export class GroupMembersComponent {
   readonly group$: Observable<IGroup>;
   readonly isSupremeLeader$: Observable<boolean>;
+
+  @Output()
+  readonly dismiss = new EventEmitter();
+
   constructor(private store: Store<AppState>) {
     this.group$ = store.select(getGroup);
     this.isSupremeLeader$ = store.select(s => s.global?.isUserSupremeLeader);
@@ -21,5 +25,6 @@ export class GroupMembersComponent {
 
   async addMembers() {
     this.store.dispatch(requestAddMembers());
+    this.dismiss.emit();
   }
 }

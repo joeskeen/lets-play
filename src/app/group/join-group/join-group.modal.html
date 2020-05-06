@@ -8,7 +8,7 @@
         <div *ngIf="!busy">
             <hc-form-field>
                 <hc-label>Enter your group's join code:</hc-label>
-                <input hcInput [formControl]="groupCodeControl" (key.enter)="join(groupCodeControl.value)" />
+                <input hcInput [formControl]="groupCodeControl" (keyup.enter)="join(groupCodeControl.value)" />
                 <hc-error>Group code is required.</hc-error>
             </hc-form-field>
         </div>

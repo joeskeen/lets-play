@@ -41,6 +41,12 @@ export class GameComponent {
       .replace(/[^a-z0-9'_]/g, ' ')
       .replace(/\s+/, ' ')
       .trim();
+
+    if (!response) {
+      this.responseControl.reset();
+      return;
+    }
+
     this.store.dispatch(
       addResponse({
         response: {
@@ -50,6 +56,7 @@ export class GameComponent {
         } as IResponse,
       })
     );
+    this.responseControl.reset();
   }
 
   nextRound() {
