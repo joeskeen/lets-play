@@ -32,11 +32,9 @@ export class NewGameModal implements OnDestroy {
   start() {
     const input: string = this.promptsControl.value;
     const prompts = input
-      .toLowerCase()
       .split(/\r?\n/g)
       .map((l) =>
         l
-          .replace(/[^a-z0-9'_]/g, ' ')
           .replace(/\s+/, ' ')
           .trim()
       );

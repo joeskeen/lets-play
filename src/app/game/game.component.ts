@@ -36,7 +36,8 @@ export class GameComponent {
   }
 
   submitResponse(user: IUser) {
-    const response = this.responseControl.value
+    const response = (this.responseControl.value as string)
+      .toLowerCase()
       .replace(/[^a-z0-9'_]/g, ' ')
       .replace(/\s+/, ' ')
       .trim();
