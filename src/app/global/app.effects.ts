@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import {
   connectionMessageReceived,
   updateUserIsSupremeLeader,
+  requestBroadcastAction,
 } from './app.actions';
 import { TypedAction } from '@ngrx/store/src/models';
 import { updateUser, requestEditUser } from '../user/user.actions';
@@ -14,13 +15,15 @@ import {
   updateGroup,
   resetGroupUsers,
   addUser,
-  removeUser
+  removeUser,
 } from '../group/group.actions';
 
 // actions that MUST NOT be broadcast
 const actionBroadcastBlacklist: Array<string | RegExp> = [
-  ...[updateUser, updateUserIsSupremeLeader].map((a) => a.type),
-  /^(.*?\:)?request/gi,
+  /\:?\brequest/gi,
+  ...[updateUser, updateUserIsSupremeLeader, connectionMessageReceived].map(
+    (a) => a.type
+  ),
 ];
 
 @Injectable()
@@ -31,32 +34,42 @@ export class AppEffects {
     private connectionManager: ConnectionManagerService
   ) {}
 
-  readonly broadcastStateChanges = createEffect(
+  readonly broadcastStateChanges = createEffect(() =>
+    this.actions.pipe(
+      withLatestFrom(this.store),
+      filter(
+        // only broadcast from the host
+        ([_, state]) => state.global.isUserSupremeLeader
+      ),
+      filter(
+        // filter out blacklisted actions
+        ([action]) =>
+          !(action as any).broadcasted &&
+          !actionBroadcastBlacklist.find((b) =>
+            typeof b === 'string' ? b === action.type : b.test(action.type)
+          )
+      ),
+      tap(([action]) =>
+        console.log(`requesting broadcast of action ${action.type}...`)
+      ),
+      map(([action]) => requestBroadcastAction({ action }))
+    )
+  );
+
+  readonly requestBroadcastAction = createEffect(
     () =>
       this.actions.pipe(
+        ofType(requestBroadcastAction),
+        filter(a => !(a as any).broadcasted && !(a.action as any).broadcasted && a.action.type !== requestBroadcastAction.type),
         withLatestFrom(this.store),
-        filter(
-          // only broadcast from the host
-          ([_, state]) =>
-            state.user &&
-            state.user.uniqueId &&
-            state.group &&
-            state.group.users &&
-            state.group.users.length > 1 &&
-            state.group.supremeLeader.uniqueId === state.user.uniqueId
-        ),
-        filter(
-          // filter out blacklisted actions
-          ([action]) =>
-            !actionBroadcastBlacklist.find((b) =>
-              typeof b === 'string' ? b === action.type : b.test(action.type)
-            )
-        ),
-        // tap(([action]) => console.log(`Broadcasting ${action.type}...`)),
+        tap(([action]) => console.log(`Broadcasting ${action.action.type}...`)),
         tap(([action, state]) =>
           this.connectionManager.broadcast({
             type: '@ngrx-action',
-            data: { originatorId: state.user.uniqueId, action },
+            data: {
+              originatorId: state.user.uniqueId,
+              action: { ...action.action, broadcasted: true },
+            },
           })
         )
       ),

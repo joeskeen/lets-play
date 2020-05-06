@@ -19,6 +19,7 @@ import {
   switchMap,
   first,
   tap,
+  distinctUntilChanged,
 } from 'rxjs/operators';
 import { ModalService, HcToasterService } from '@healthcatalyst/cashmere';
 import {
@@ -57,7 +58,11 @@ export class GroupEffects {
   readonly addUserOnGroupUpdateIfOnlyOneUser$ = createEffect(() =>
     this.actions.pipe(
       ofType(updateGroup),
-      filter((a) => a.group?.users?.length === 1),
+      withLatestFrom(this.state),
+      filter(([_, s]) => s.global.isUserSupremeLeader),
+      map(([_, s]) => s.group.users.length),
+      filter((n) => n === 1),
+      distinctUntilChanged(),
       map(() => requestAddMembers())
     )
   );

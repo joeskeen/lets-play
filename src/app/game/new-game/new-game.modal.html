@@ -1,0 +1,14 @@
+<hc-modal>
+    <hc-modal-header>New Game</hc-modal-header>
+    <hc-modal-body>
+        <hc-form-field>
+            <hc-label>Enter prompts, one per line</hc-label>
+            <textarea hcInput [formControl]="promptsControl"></textarea>
+            <hc-error>Prompts are required.</hc-error>
+        </hc-form-field>
+    </hc-modal-body>
+    <hc-modal-footer>
+        <button hc-button buttonStyle="secondary" (click)="activeModal.dismiss()">Cancel</button>
+        <button hc-button (click)="start()">Start</button>
+    </hc-modal-footer>
+</hc-modal>

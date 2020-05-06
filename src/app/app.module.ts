@@ -19,6 +19,7 @@ import { GroupModule } from './group/group.module';
 import { AppEffects } from './global/app.effects';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { GameModule } from './game/game.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -39,6 +40,7 @@ import { CommonModule } from '@angular/common';
       maxAge: 25,
       logOnly: environment.production,
     }),
+    GameModule
   ],
   providers: [{ provide: ErrorHandler, useClass: UncaughtErrorHandlerService }],
   bootstrap: [AppComponent],

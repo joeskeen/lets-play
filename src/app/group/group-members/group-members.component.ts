@@ -4,7 +4,6 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { IGroup } from '../group';
 import { getGroup } from '../group.reducer';
-import { first } from 'rxjs/operators';
 import { requestAddMembers } from '../group.actions';
 
 @Component({

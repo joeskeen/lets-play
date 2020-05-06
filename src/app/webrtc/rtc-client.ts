@@ -8,6 +8,7 @@ export class RtcClient {
   readonly receivedMessage$: Observable<IMessage>;
   private readonly _sentMessage = new Subject<IMessage>();
   readonly sentMessage$ = this._sentMessage.asObservable();
+  private closed = false;
 
   constructor(private channel: RTCDataChannel) {
     this.receivedMessage$ = fromEvent<MessageEvent>(channel, 'message').pipe(
@@ -16,7 +17,16 @@ export class RtcClient {
   }
 
   sendMessage(message: IMessage) {
-    this.channel.send(JSON.stringify(message));
-    this._sentMessage.next(message);
+    if (this.closed) {
+      return;
+    }
+
+    try {
+      this.channel.send(JSON.stringify(message));
+      this._sentMessage.next(message);
+    } catch (err) {
+      this.closed = true;
+      throw err;
+    }
   }
 }
