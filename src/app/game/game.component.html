@@ -1,3 +1,4 @@
+<h1>Says Who?</h1>
 <ng-container *ngIf="user$ | async; let user">
   <ng-container *ngIf="game$ | async; let game">
     <ng-container [ngSwitch]="game.step">
@@ -6,10 +7,17 @@
           *ngIf="isSupremeLeader$ | async; then startGame; else waitingForGame"
         ></ng-container>
         <ng-template #startGame>
+          <hc-banner [type]="'warning'">
+            <span hcBannerStamp>WAITING</span>
+            Everyone is waiting for you to start the game.
+          </hc-banner>
           <button hc-button (click)="newGame()">Start game</button>
         </ng-template>
         <ng-template #waitingForGame>
-          <span>Waiting for the Supreme Leader to start the game.</span>
+          <hc-banner [type]="'info'">
+            <span hcBannerStamp>WAITING</span>
+            Waiting for the Supreme Leader to start the game.
+          </hc-banner>
         </ng-template>
       </ng-container>
 
@@ -23,27 +31,41 @@
           "
         ></ng-container>
         <ng-template #waitingForResponses>
-          <span>Waiting for other players to answer the prompt.</span>
+          <hc-banner [type]="'info'">
+            <span hcBannerStamp>WAITING</span>
+            Waiting for other players to answer the prompt.
+          </hc-banner>
         </ng-template>
         <ng-template #enterResponse>
-            <hc-form-field>
-                <hc-label>Enter your response:</hc-label>
-                <input hcInput [formControl]="responseControl" />
-                <hc-error>Input is required.</hc-error>
-            </hc-form-field>
-            <button hc-button (click)="submitResponse(user)">Submit</button>
+          <hc-banner [type]="'warning'">
+            <span hcBannerStamp>IT'S YOUR TURN</span>
+            Everyone is waiting for you to enter a response.
+          </hc-banner>
+          <hc-form-field>
+            <hc-label>Enter your response:</hc-label>
+            <input hcInput [formControl]="responseControl" />
+            <hc-error>Input is required.</hc-error>
+          </hc-form-field>
+          <button hc-button (click)="submitResponse(user)">Submit</button>
         </ng-template>
       </ng-container>
 
       <ng-container *ngSwitchCase="'WAITING_FOR_GUESS'">
         <ng-template #enterGuess>
-          <span>
+          <hc-banner [type]="'warning'">
+            <span hcBannerStamp>IT'S YOUR TURN</span>
+            Everyone is waiting for you to make a guess.
+          </hc-banner>
+          <h3>
             Make a guess by clicking a question mark icon and selecting a
             player.
-          </span>
+          </h3>
         </ng-template>
         <ng-template #waitingForPlayer>
-          <span>Waiting for {{ game.currentTurn?.name }} to make a guess.</span>
+          <hc-banner [type]="'info'">
+            <span hcBannerStamp>WAITING</span>
+            Waiting for {{ game.currentTurn?.name }} to make a guess.
+          </hc-banner>
         </ng-template>
 
         <ng-container
@@ -53,8 +75,12 @@
             else waitingForPlayer
           "
         ></ng-container>
-        <ng-container *ngTemplateOutlet="responses"></ng-container>
-        <ng-container *ngTemplateOutlet="playerScores"></ng-container>
+        <hc-tile>
+          <ng-container *ngTemplateOutlet="responses"></ng-container>
+        </hc-tile>
+        <hc-tile>
+          <ng-container *ngTemplateOutlet="playerScores"></ng-container>
+        </hc-tile>
       </ng-container>
 
       <ng-container *ngSwitchCase="'ROUND_END'">
@@ -63,10 +89,17 @@
           *ngIf="isSupremeLeader$ | async; then startGame; else waitingForGame"
         ></ng-container>
         <ng-template #startNextRound>
+          <hc-banner [type]="'warning'">
+            <span hcBannerStamp>WAITING</span>
+            Everyone is waiting for you to start the next round.
+          </hc-banner>
           <button hc-button (click)="nextRound()">Start next round</button>
         </ng-template>
         <ng-template #waitingForNextRound>
-          <span>Waiting for the Supreme Leader to start the next round.</span>
+          <hc-banner [type]="'info'">
+            <span hcBannerStamp>WAITING</span>
+            Waiting for the Supreme Leader to start the next round.
+          </hc-banner>
         </ng-template>
       </ng-container>
 
@@ -82,6 +115,7 @@
     </ng-container>
 
     <ng-template #playerScores>
+      <h3>Scoreboard</h3>
       <hc-list>
         <hc-list-item *ngFor="let player of game.players">
           <img [src]="player.user.avatarUrl" hcListAvatar />
@@ -123,7 +157,9 @@
             <div class="guessable-players">
               <ng-container *ngFor="let player of game.players">
                 <ng-container
-                  *ngIf="!player.guessed && player.user.uniqueId !== user.uniqueId"
+                  *ngIf="
+                    !player.guessed && player.user.uniqueId !== user.uniqueId
+                  "
                 >
                   <button
                     hc-button

@@ -23,12 +23,12 @@ import {
   switchMap,
 } from 'rxjs/operators';
 import { Store, Action } from '@ngrx/store';
-import { GameState } from './game.state';
 import { ModalService } from '@healthcatalyst/cashmere';
 import { NewGameModal } from './new-game/new-game.modal';
 import { AppState } from '../global/app.reducer';
 import { getGame } from './game.reducer';
 import { requestBroadcastAction } from '../global/app.actions';
+import shuffle from 'fast-shuffle';
 
 @Injectable()
 export class GameEffects {
@@ -92,20 +92,29 @@ export class GameEffects {
       ofType(addResponse),
       withLatestFrom(this.state.select(getGame)),
       filter(([_, state]) => state.responses.length === state.players.length),
-      map(() => startGuessing())
+      mergeMap(([_, state]) => [
+        updateGame({
+          game: {
+            prompts: shuffle(state.prompts),
+          },
+        }),
+        startGuessing(),
+      ])
     )
   );
 
   guessMade$ = createEffect(() =>
     this.actions.pipe(
       ofType(makeGuess),
-      withLatestFrom(this.state.select(getGame)),
+      withLatestFrom(this.state),
+      filter(([_, s]) => s.global.isUserSupremeLeader),
+      map(([a, s]) => ({ action: a, state: getGame(s) })),
       filter(
-        ([action, state]) =>
+        ({ action, state }) =>
           state.currentTurn.uniqueId === action.guessingUser.uniqueId &&
           action.guessingUser.uniqueId !== action.guessedUser.uniqueId
       ),
-      mergeMap(([action, state]) => {
+      mergeMap(({ action, state }) => {
         const correctGuess = state.responses.find(
           (r) =>
             r.response === action.response.response &&

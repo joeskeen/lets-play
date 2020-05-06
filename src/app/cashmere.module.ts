@@ -14,6 +14,7 @@ import {
   DrawerModule,
   TileModule,
   ProgressIndicatorsModule,
+  BannerModule,
 } from '@healthcatalyst/cashmere';
 import { CommonModule } from '@angular/common';
 
@@ -35,7 +36,8 @@ import { CommonModule } from '@angular/common';
     ChipModule,
     DrawerModule,
     TileModule,
-    ProgressIndicatorsModule
+    ProgressIndicatorsModule,
+    BannerModule
   ],
 })
 export class CashmereModule {}

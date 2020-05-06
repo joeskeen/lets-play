@@ -72,9 +72,9 @@
           Join Group
         </button>
       </div>
-      <hc-tile *ngIf="group?.groupName && group.users?.length">
+      <ng-container *ngIf="group?.groupName && group.users?.length">
         <app-game></app-game>
-      </hc-tile>
+      </ng-container>
     </div>
   </hc-drawer-container>
 </div>

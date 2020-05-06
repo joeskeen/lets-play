@@ -11,6 +11,7 @@ import { GroupMembersComponent } from './group-members/group-members.component';
 import { UserModule } from '../user/user.module';
 import { AddGroupMembersModal } from './add-group-members/add-group-members.modal';
 import { JoinGroupModal } from './join-group/join-group.modal';
+import { ClipboardModule } from 'ngx-clipboard';
 
 const groupFeatureKey = 'group';
 
@@ -22,7 +23,8 @@ const groupFeatureKey = 'group';
     ReactiveFormsModule,
     StoreModule.forFeature(groupFeatureKey, GroupReducer),
     EffectsModule.forFeature([GroupEffects]),
-    UserModule
+    UserModule,
+    ClipboardModule
   ],
   declarations: [GroupSettingsComponent, GroupMembersComponent, AddGroupMembersModal, JoinGroupModal],
   exports: [GroupSettingsComponent, GroupMembersComponent],

@@ -1,20 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, BehaviorSubject, Subject, interval } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { GroupState, getGroup } from '../group.reducer';
-import { Store, Action } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/global/app.reducer';
 import {
   takeUntil,
   filter,
-  first,
   switchMap,
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
-import { updateGroup, addUser, UpdateGroupAction } from '../group.actions';
+import { updateGroup, addUser } from '../group.actions';
 import { IGroup } from '../group';
-import { RandomNameService } from 'src/shared/random-name.service';
-import { environment } from 'src/environments/environment';
 import { TempSharedStorageService } from 'src/shared/temp-shared-storage.service';
 import { ConnectionManagerService } from 'src/app/webrtc/connection-manager.service';
 import { RtcService } from 'src/app/webrtc/rtc.service';
@@ -22,8 +19,6 @@ import { IUser } from 'src/app/user/user';
 import { getUser } from 'src/app/user/user.reducer';
 import { ActiveModal, HcToasterService } from '@healthcatalyst/cashmere';
 import { IMessage } from 'src/app/webrtc/messages';
-import { connectionMessageReceived } from 'src/app/global/app.actions';
-import { CustomImageToast } from 'src/app/toasts/custom-image.toast';
 
 type UserOfferHash = Record<
   string,
@@ -97,7 +92,10 @@ export class AddGroupMembersModal implements OnInit, OnDestroy {
           // set initial group state
           const message: IMessage = {
             type: '@ngrx-action',
-            data: { originatorId: this.user.uniqueId, action: updateGroup({ group: this.group }) },
+            data: {
+              originatorId: this.user.uniqueId,
+              action: updateGroup({ group: this.group }),
+            },
           };
           client.sendMessage(message);
           await this.tempDataService.delete(`${this.joinCode}/${uid}`);
@@ -105,11 +103,21 @@ export class AddGroupMembersModal implements OnInit, OnDestroy {
       });
   }
 
-async ngOnDestroy() {
+  copied(content: string) {
+    this.toasterService.addToast({
+      type: 'success',
+      header: 'Copied!',
+      body: `Copied group code '${content}' to clipboard.`
+    });
+  }
+
+  async ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
     try {
       await this.tempDataService.delete(this.joinCode);
-    } catch { /* ignore clean-up errors */ }
+    } catch {
+      /* ignore clean-up errors */
+    }
   }
 }

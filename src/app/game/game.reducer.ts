@@ -1,5 +1,4 @@
-import { createReducer, on, createSelector } from '@ngrx/store';
-import { IUser } from '../user/user';
+import { createReducer, on } from '@ngrx/store';
 import {
   newRound,
   revealResponse,
@@ -7,7 +6,6 @@ import {
   addResponse,
   updateStep,
   updateGame,
-  makeGuess,
   startGame,
   startGuessing,
   nextPlayer,
@@ -15,6 +13,7 @@ import {
 } from './game.actions';
 import { GameState, gameFeatureKey } from './game.state';
 import { AppState } from '../global/app.reducer';
+import shuffle from 'fast-shuffle';
 
 export const initialState: GameState = {
   players: [],
@@ -35,7 +34,7 @@ export const GameReducer = createReducer(
         score: 0,
         guessed: false,
       })),
-      prompts: action.prompts,
+      prompts: shuffle(action.prompts),
     })
   ),
   on(
@@ -44,11 +43,10 @@ export const GameReducer = createReducer(
       if (!state.prompts.length) {
         return { ...state, currentPrompt: null, step: 'GAME_OVER' };
       }
-      const nextPromptIndex = Math.floor(Math.random() * state.prompts.length);
       return {
         ...state,
-        currentPrompt: state.prompts[nextPromptIndex],
-        prompts: state.prompts.filter((_, i) => i !== nextPromptIndex),
+        currentPrompt: state.prompts[0],
+        prompts: state.prompts.slice(1),
         step: 'WAITING_FOR_RESPONSES',
       };
     }
@@ -102,13 +100,10 @@ export const GameReducer = createReducer(
   on(
     startGuessing,
     (state): GameState => {
-      const sortedPlayers = [...state.players]
-        .sort((a, b) => a.score - b.score)
-        .map((p) => ({ ...p, guessed: false }));
+      const firstPlayer = shuffle(state.players)[0];
       return {
         ...state,
-        players: sortedPlayers,
-        currentTurn: sortedPlayers[0].user,
+        currentTurn: firstPlayer.user,
         step: 'WAITING_FOR_GUESS',
       };
     }

@@ -4,7 +4,13 @@
   </hc-modal-header>
   <hc-modal-body>
     <ng-container *ngIf="group$ | async; let group">
-      <p>Your group code is: <code>{{ (group$ | async).joinCode }}</code></p>
+      <p>
+        <span>Your group code is:</span>
+        <code>{{ group.joinCode }}</code>
+        <button hc-icon-button ngxClipboard [cbContent]="group.joinCode" (click)="copied(group.joinCode)">
+          <hc-icon fontSet="fas" fontIcon="fa-copy"></hc-icon>
+        </button>
+      </p>
       <span><em>Note: you must keep this window open to accept new group members.</em></span>
       <div class="group-members">
         <img *ngFor="let user of group.users" [src]="user.avatarUrl" class="avatar-icon" [title]="user.name" />
