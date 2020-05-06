@@ -10,7 +10,7 @@ import {
   requestBroadcastAction,
 } from './app.actions';
 import { TypedAction } from '@ngrx/store/src/models';
-import { updateUser, requestEditUser } from '../user/user.actions';
+import { updateUser } from '../user/user.actions';
 import {
   updateGroup,
   resetGroupUsers,
@@ -20,7 +20,7 @@ import {
 
 // actions that MUST NOT be broadcast
 const actionBroadcastBlacklist: Array<string | RegExp> = [
-  /\:?\brequest/gi,
+  /\brequest/gi,
   ...[updateUser, updateUserIsSupremeLeader, connectionMessageReceived].map(
     (a) => a.type
   ),
@@ -80,7 +80,7 @@ export class AppEffects {
     this.actions.pipe(
       ofType(connectionMessageReceived),
       filter((a) => a.message.type === '@ngrx-action'),
-      // TODO: this probably will go horribly wrong if further filtering isn't done
+      tap(a => console.log(`replaying action ${a.message.data.action.type}...`)),
       map((a) => a.message.data.action as TypedAction<any>)
     )
   );

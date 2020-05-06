@@ -84,7 +84,7 @@
     <ng-template #playerScores>
       <hc-list>
         <hc-list-item *ngFor="let player of game.players">
-          <img [src]="player.user.uniqueId" hcListAvatar />
+          <img [src]="player.user.avatarUrl" hcListAvatar />
           <span hcListLine>{{ player.user.name }}</span>
           <span hcListLine>{{ player.score }} points</span>
         </hc-list-item>
