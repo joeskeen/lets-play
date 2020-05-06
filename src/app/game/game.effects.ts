@@ -73,6 +73,7 @@ export class GameEffects {
           game: {
             currentPrompt: state.prompts[nextPromptIndex],
             prompts: state.prompts.filter((_, i) => i !== nextPromptIndex),
+            responses: [],
             step: 'WAITING_FOR_RESPONSES',
           },
         });
