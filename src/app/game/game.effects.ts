@@ -92,10 +92,10 @@ export class GameEffects {
     this.actions.pipe(
       ofType(addResponse),
       withLatestFrom(this.state),
-      filter(([a,s]) => s.global.isUserSupremeLeader),
-      map(([a,s]) => ({ action: a, state: getGame(s) })),
-      filter(({state}) => state.responses.length === state.players.length),
-      mergeMap(({state}) => [
+      filter(([_, s]) => s.global.isUserSupremeLeader),
+      map(([a, s]) => ({ action: a, state: getGame(s) })),
+      filter(({ state }) => state.responses.length === state.players.length),
+      mergeMap(({ state }) => [
         updateGame({
           game: {
             prompts: shuffle(state.prompts),
