@@ -9,7 +9,9 @@ const global = window as any;
 })
 export class AboutModal {
   readonly gitHash = global.gitHash;
-  readonly buildTimestamp = new Date(global.buildTimestamp);
+  readonly buildTimestamp = isNaN(+global.buildTimestamp)
+    ? new Date(global.buildTimestamp)
+    : new Date(+global.buildTimestamp);
 
   constructor(private activeModal: ActiveModal) {}
 
