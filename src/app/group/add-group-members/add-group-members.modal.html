@@ -7,9 +7,16 @@
       <p>
         <span>Your group code is:</span>
         <code>{{ group.joinCode }}</code>
-        <button hc-icon-button ngxClipboard [cbContent]="group.joinCode" (click)="copied(group.joinCode)">
+        <button hc-icon-button ngxClipboard [cbContent]="group.joinCode" (click)="copied(group.joinCode)" title="Copy group code">
           <hc-icon fontSet="fas" fontIcon="fa-copy"></hc-icon>
         </button>
+        <br />
+        <ng-container *ngIf="group.joinCode">
+          <span>Have others join the group by going to <a [href]="joinUrl">{{joinUrl}}</a></span>
+          <button hc-icon-button ngxClipboard [cbContent]="joinUrl" (click)="copied(joinUrl)" title="Copy join URL">
+            <hc-icon fontSet="fas" fontIcon="fa-copy"></hc-icon>
+          </button>
+        </ng-container>
       </p>
       <span><em>Note: you must keep this window open to accept new group members.</em></span>
       <div class="group-members">

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActiveModal, HcToasterService } from '@healthcatalyst/cashmere';
 import { FormControl, Validators } from '@angular/forms';
 import { ConnectionManagerService } from 'src/app/webrtc/connection-manager.service';
@@ -9,12 +9,13 @@ import { getUser } from 'src/app/user/user.reducer';
 import { RtcService } from 'src/app/webrtc/rtc.service';
 import { IUser } from 'src/app/user/user';
 import { first, map, filter } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
 
 @Component({
   templateUrl: 'join-group.modal.html',
   styleUrls: ['join-group.modal.scss'],
 })
-export class JoinGroupModal {
+export class JoinGroupModal implements OnInit {
   readonly groupCodeControl = new FormControl('', [Validators.required]);
   private user: IUser;
   busy: boolean;
@@ -30,6 +31,24 @@ export class JoinGroupModal {
     this.store.pipe(select(getUser)).subscribe((user) => (this.user = user));
     if (this.activeModal.data?.joinCode) {
       this.join(this.activeModal.data.joinCode);
+    }
+  }
+
+  async ngOnInit() {
+    this.checkHash(window.location.hash);
+    fromEvent(window, 'hashchange').subscribe(() =>
+      this.checkHash(window.location.hash)
+    );
+  }
+
+  async checkHash(hash: string) {
+    if (!hash || hash.length === 1) {
+      return;
+    }
+    hash = hash.replace(/^#/, '').trim();
+    if (hash) {
+      this.groupCodeControl.patchValue(hash);
+      this.join(hash);
     }
   }
 

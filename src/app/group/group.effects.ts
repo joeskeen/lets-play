@@ -7,8 +7,6 @@ import {
   updateGroupUser,
   updateGroup,
   requestAddMembers,
-  requestCreateGroup,
-  requestEditGroup,
   requestJoinGroup,
   addUser,
 } from './group.actions';
@@ -17,16 +15,10 @@ import {
   filter,
   withLatestFrom,
   switchMap,
-  first,
   tap,
   distinctUntilChanged,
 } from 'rxjs/operators';
 import { ModalService, HcToasterService } from '@healthcatalyst/cashmere';
-import {
-  GroupSettingsComponent,
-  GroupSettingsModalData,
-} from './group-settings/group-settings.component';
-import { getGroup } from './group.reducer';
 import { AddGroupMembersModal } from './add-group-members/add-group-members.modal';
 import { RandomNameService } from 'src/shared/random-name.service';
 import { from } from 'rxjs';
@@ -135,9 +127,8 @@ export class GroupEffects {
     () =>
       this.actions.pipe(
         ofType(requestJoinGroup),
-        withLatestFrom(this.state),
         switchMap(
-          () => this.modalService.open(JoinGroupModal, { size: 'md' }).result
+          () => this.modalService.open(JoinGroupModal, { size: 'md', data: { } }).result
         )
       ),
     { dispatch: false }

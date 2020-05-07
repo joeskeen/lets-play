@@ -3,7 +3,7 @@ import { IUser } from './user/user';
 import { Store, select } from '@ngrx/store';
 import { AppState } from './global/app.reducer';
 import { requestLoadUser, requestEditUser } from './user/user.actions';
-import { Observable } from 'rxjs';
+import { Observable, fromEvent } from 'rxjs';
 import { getUser } from './user/user.reducer';
 import { ModalService } from '@healthcatalyst/cashmere';
 import {
@@ -13,6 +13,7 @@ import {
 } from './group/group.actions';
 import { getGroup, GroupState } from './group/group.reducer';
 import { AboutModal } from './about/about.modal';
+import { first, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -35,6 +36,28 @@ export class AppComponent implements OnInit {
 
   async ngOnInit() {
     this.store.dispatch(requestLoadUser());
+    // wait for the user to be initialized before checking hash
+    await this.user$
+      .pipe(
+        filter((u) => !!u.name && !!u.email),
+        first()
+      )
+      .toPromise();
+
+    this.checkHash(window.location.hash);
+    fromEvent(window, 'hashchange').subscribe(() =>
+      this.checkHash(window.location.hash)
+    );
+  }
+
+  async checkHash(hash: string) {
+    if (!hash || hash.length === 1) {
+      return;
+    }
+    hash = hash.replace(/^#/, '').trim();
+    if (hash) {
+      this.joinGroup();
+    }
   }
 
   createGroup() {

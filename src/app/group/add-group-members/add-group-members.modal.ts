@@ -37,6 +37,8 @@ export class AddGroupMembersModal implements OnInit, OnDestroy {
   private acknowledgedConnectionRequests: string[] = [];
   private user: IUser;
   private group: IGroup;
+  readonly baseHref = document.querySelector('base').href;
+  get joinUrl() { return `${this.baseHref}#${this.joinCode}`; }
 
   constructor(
     private store: Store<AppState>,
@@ -107,7 +109,7 @@ export class AddGroupMembersModal implements OnInit, OnDestroy {
     this.toasterService.addToast({
       type: 'success',
       header: 'Copied!',
-      body: `Copied group code '${content}' to clipboard.`
+      body: `Copied '${content}' to clipboard.`
     });
   }
 
