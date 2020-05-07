@@ -17,7 +17,7 @@ function publish() {
       `Publishing project '${project.defaultProject}' to GitHub Pages...`
     )
   );
-  const commitHash = runCommand('git rev-parse HEAD').toString();
+  const commitHash = runCommand('git rev-parse HEAD').toString().trim();
   const remoteInfo = runCommand('git remote -v').toString();
   const originUrl = /^origin\s+([^\s]+)\s/.exec(remoteInfo)[1];
   const gitHubProjectName = /\/([^\.\/]+)\.git$/.exec(originUrl)[1];
