@@ -37,7 +37,8 @@ export class JoinGroupModal {
     if (!groupCode) {
       return;
     }
-    
+    groupCode = groupCode.toLowerCase();
+
     this.busy = true;
     try {
       const groupConnections = await this.tempStorage.get(groupCode);
@@ -51,7 +52,7 @@ export class JoinGroupModal {
       }
       const client = await this.rtcService.create(this.user, async (offer) => {
         const storageKey = `${groupCode}/${this.user.uniqueId}`;
-        await this.tempStorage.set(storageKey, {offer});
+        await this.tempStorage.set(storageKey, { offer });
         const response = await this.tempStorage
           .watch<IHandshake>(storageKey)
           .pipe(

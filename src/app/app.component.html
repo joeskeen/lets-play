@@ -6,6 +6,10 @@
   <hc-navbar-link class="prerelease-tag">
     <hc-chip color="red">Alpha</hc-chip>
   </hc-navbar-link>
+  <hc-icon
+    class="hc-navbar-icon" 
+    fontSet="fas" fontIcon="fa-question-circle"
+    [hcPop]="help"></hc-icon>
   <ng-container *ngIf="group$ | async; let group">
     <hc-icon *ngIf="group.users.length && group.groupName" 
       class="hc-navbar-icon" 
@@ -86,18 +90,24 @@
   </ng-container>
 </hc-pop>
 
-<!-- <div *ngIf="client">
-    <hc-form-field>
-      <hc-label>Send some data to {{ client.peer.name }}:</hc-label>
-      <input hcInput #input />
-    </hc-form-field>
-    <button
-      hc-button
-      (click)="client.sendMessage({ type: 'chat', data: input.value })"
-    >
-      Send message
-    </button>
-    <h4>Last message received from peer:</h4>
-    <pre><code>{{ client.receivedMessage$ | async | json }}</code></pre>
-    <pre><code>{{ client.peer | json }}</code></pre>
-  </div> -->
+<hc-pop #help [autoCloseOnContentClick]="true" [showArrow]="false" horizontalAlign="end">
+  <div hcMenu>
+      <a hcMenuItem href="https://github.com/joeskeen/lets-play/issues/new" target="_blank">
+          <hc-icon hcMenuIcon fontSet="fas" fontIcon="fa-bug"></hc-icon>
+          <span hcMenuText>Report a bug</span>
+      </a>
+      <a hcMenuItem href="https://github.com/joeskeen/lets-play/issues/new" target="_blank">
+          <hc-icon hcMenuIcon fontSet="far" fontIcon="fa-lightbulb"></hc-icon>
+          <span hcMenuText>Request a feature</span>
+      </a>
+      <a hcMenuItem href="https://github.com/joeskeen/lets-play" target="_blank">
+          <hc-icon hcMenuIcon fontSet="fab" fontIcon="fa-github"></hc-icon>
+          <span hcMenuText>View on GitHub</span>
+      </a>
+      <div hcMenuItem hcDivider></div>
+      <button hcMenuItem (click)="about()">
+          <hc-icon hcMenuIcon fontSet="fas" fontIcon="fa-info"></hc-icon>
+          <span hcMenuText>About Let's Play</span>
+      </button>
+  </div>
+</hc-pop>

@@ -1,0 +1,32 @@
+<hc-modal>
+    <hc-modal-header>About Let's Play</hc-modal-header>
+    <hc-modal-body>
+        <div>GIT Hash: <code>{{gitHash}}</code></div>
+        <div>Build timestamp: <code>{{buildTimestamp}}</code></div>
+
+        <p>
+            A special thanks to the following projects and services used to build
+            Let's Play:
+        </p>
+
+        <ul>
+            <li>Angular Framework (<a href="https://angular.io" target="_blank">angular.io</a>)</li>
+            <li>TypeScript (<a href="https://typescriptlang.org" target="_blank">typescriptlang.org</a>)</li>
+            <li>NGRX State Management (<a href="https://ngrx.io" target="_blank">ngrx.io</a>)</li>
+            <li>Cashmere Design Library (<a href="https://cashmere.healthcatalyst.net" target="_blank">cashmere.healthcatalyst.net</a>)</li>
+            <li>Font Awesome Icons (<a href="https://fontawesome.com/" target="_blank">fontawesome.com</a>)</li>
+            <li>goJSON Temporary Data Storage (<a href="https://db.neelr.dev/" target="_blank">db.neelr.dev</a>)</li>
+            <li>Docker Container Name Generator (<a href="https://frightanic.com/computers/docker-default-container-names/" target="_blank">frightanic.com</a>)</li>
+            <li>ngx-clipboard (<a href="https://www.npmjs.com/package/ngx-clipboard" target="_blank">npm</a>)</li>
+            <li>npm-font-open-sans (<a href="https://www.npmjs.com/package/npm-font-open-sans" target="_blank">npm</a>)</li>
+            <li>md5 (<a href="https://www.npmjs.com/package/md5" target="_blank">npm</a>)</li>
+            <li>fast-shuffle (<a href="https://www.npmjs.com/package/fast-shuffle" target="_blank">npm</a>)</li>
+            <li>uuid (<a href="https://www.npmjs.com/package/uuid" target="_blank">npm</a>)</li>
+            <li>chalk (<a href="https://www.npmjs.com/package/chalk" target="_blank">npm</a>)</li>
+            <li>@ngx-pwa/local-storage (<a href="https://www.npmjs.com/package/@ngx-pwa/local-storage" target="_blank">npm</a>)</li>
+        </ul>
+    </hc-modal-body>
+    <hc-modal-footer>
+        <button hc-button buttonStyle="secondary"(click)="ok()">OK</button>
+    </hc-modal-footer>
+</hc-modal>

@@ -20,9 +20,10 @@ import { AppEffects } from './global/app.effects';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { GameModule } from './game/game.module';
+import { AboutModal } from './about/about.modal';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, AboutModal],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -42,6 +43,7 @@ import { GameModule } from './game/game.module';
     }),
     GameModule
   ],
+  entryComponents: [AboutModal],
   providers: [{ provide: ErrorHandler, useClass: UncaughtErrorHandlerService }],
   bootstrap: [AppComponent],
 })

@@ -1,19 +1,18 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { IUser } from './user/user';
 import { Store, select } from '@ngrx/store';
 import { AppState } from './global/app.reducer';
 import { requestLoadUser, requestEditUser } from './user/user.actions';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { getUser } from './user/user.reducer';
-import { ModalService, Drawer } from '@healthcatalyst/cashmere';
+import { ModalService } from '@healthcatalyst/cashmere';
 import {
   requestCreateGroup,
   requestJoinGroup,
   requestCancelEditGroup,
 } from './group/group.actions';
-import { IGroup } from './group/group';
 import { getGroup, GroupState } from './group/group.reducer';
-import { switchMap, filter, tap } from 'rxjs/operators';
+import { AboutModal } from './about/about.modal';
 
 @Component({
   selector: 'app-root',
@@ -52,5 +51,9 @@ export class AppComponent implements OnInit {
 
   async editUser() {
     this.store.dispatch(requestEditUser({ mandatory: false }));
+  }
+
+  about() {
+    this.modalService.open(AboutModal, { size: 'md' });
   }
 }
