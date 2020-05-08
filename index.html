@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Let's play!</title>
+    <base href="/lets-play/">    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="assets/font-awesome-svgs/solid/dice.svg"
+    />
+    <script>
+      if (document.location.href.endsWith('.html')) {
+        const correctBaseUrl = /^(.*?)[^\/]+$/.exec(document.location.href)[1];
+        document.location.href = correctBaseUrl;
+      } else {
+        const base = document.querySelector('head base');
+        base.setAttribute('href', document.location.href);
+      }
+      window.gitHash = 'e4c3a658724b54f18c3874da9f3baf18875ae146';
+      window.buildTimestamp = '1588896891181';
+    </script>
+  <link rel="stylesheet" href="styles.d7f19d59e1861b8b9f53.css"></head>
+  <body>
+    <app-root></app-root>
+  <script src="runtime-es2015.1eba213af0b233498d9d.js" type="module"></script><script src="runtime-es5.1eba213af0b233498d9d.js" nomodule defer></script><script src="polyfills-es5.1fd9b76218eca8053895.js" nomodule defer></script><script src="polyfills-es2015.690002c25ea8557bb4b0.js" type="module"></script><script src="main-es2015.766fae62c38602dfe709.js" type="module"></script><script src="main-es5.766fae62c38602dfe709.js" nomodule defer></script></body>
+</html>
