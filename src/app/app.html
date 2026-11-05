@@ -1,0 +1,39 @@
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">▶</span>
+      Let’s Play
+    </div>
+    <div class="topbar__spacer"></div>
+    @if (room.phase() !== 'idle') {
+      <span
+        class="pill"
+        [title]="room.openPeers() + ' peer connections open'"
+      >
+        <span
+          class="dot"
+          [class.dot--on]="room.openPeers() > 0"
+          [class.dot--wait]="room.openPeers() === 0"
+        ></span>
+        {{ room.memberViews().length }}
+      </span>
+    }
+  </header>
+
+  <main class="container">
+    @switch (view()) {
+      @case ('landing') {
+        <app-landing />
+      }
+      @case ('join') {
+        <app-join />
+      }
+      @case ('lobby') {
+        <app-lobby />
+      }
+      @case ('game') {
+        <app-game />
+      }
+    }
+  </main>
+</div>

@@ -1,0 +1,167 @@
+<header class="stack stack--tight lobby__head">
+  <div class="row row--between">
+    <div class="section-title">Lobby</div>
+    <button class="btn btn--ghost btn--sm" (click)="leave()">Leave</button>
+  </div>
+
+  @if (room.isHost()) {
+    <input
+      class="input lobby__title"
+      [value]="room.state().room.name"
+      (change)="rename($event)"
+      maxlength="40"
+      aria-label="Room name"
+    />
+  } @else {
+    <h1>{{ room.state().room.name }}</h1>
+  }
+
+  <div class="row">
+    <span class="pill">
+      <span class="dot dot--on"></span>
+      {{ memberCount() }} {{ memberCount() === 1 ? 'player' : 'players' }}
+    </span>
+    <span class="pill">
+      {{ room.isHost() ? 'You are hosting' : 'Host: ' + hostName() }}
+    </span>
+  </div>
+</header>
+
+<div class="grid">
+  <section class="card stack">
+    <div class="section-title">Players</div>
+    <div class="list">
+      @for (member of room.memberViews(); track member.id) {
+        <div class="list__item" [class.list__item--me]="member.isMe">
+          <app-avatar [id]="member.id" [name]="member.name" size="sm" />
+          <div class="list__grow">
+            <div class="list__name">
+              {{ member.name }}
+              @if (member.isMe) {
+                <span class="faint small"> · you</span>
+              }
+            </div>
+            <div class="hint">
+              {{ member.connected ? 'connected' : 'connecting…' }}
+            </div>
+          </div>
+          @if (member.isHost) {
+            <span class="badge badge--host">host</span>
+          }
+        </div>
+      }
+    </div>
+    @if (room.isHost()) {
+      <p class="hint">
+        A game needs at least 2 players. Invite people one at a time: every
+        link is a single-use handshake.
+      </p>
+    }
+  </section>
+
+  @if (room.isHost()) {
+    <section class="card stack">
+      <div class="section-title">Invite a player</div>
+
+      @if (!room.inviteCode()) {
+        <p class="muted">
+          Create a link, show the QR or send it over any chat. When they send a
+          reply back, paste it below.
+        </p>
+        <button
+          class="btn btn--primary btn--block"
+          [disabled]="room.busy()"
+          (click)="createInvite()"
+        >
+          {{ room.busy() ? 'Preparing…' : 'Create invite' }}
+        </button>
+      } @else {
+        <div class="invite">
+          <app-qr [value]="inviteLink()" />
+          <div class="invite__side stack stack--tight">
+            <textarea
+              class="textarea textarea--code"
+              rows="3"
+              readonly
+              [value]="inviteLink()"
+              aria-label="Invite link"
+            ></textarea>
+            <div class="row">
+              <button class="btn btn--primary btn--sm" (click)="copyInvite()">
+                {{ copied() ? 'Copied' : 'Copy link' }}
+              </button>
+              @if (canShare) {
+                <button class="btn btn--ghost btn--sm" (click)="shareInvite()">
+                  Share
+                </button>
+              }
+              <button class="btn btn--ghost btn--sm" (click)="createInvite()">
+                New link
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="field">
+          <label for="reply">Their reply code</label>
+          <textarea
+            id="reply"
+            class="textarea textarea--code"
+            rows="3"
+            [value]="reply()"
+            (input)="onReply($event)"
+            placeholder="Paste the reply they send back"
+          ></textarea>
+        </div>
+        <button
+          class="btn btn--violet btn--block"
+          [disabled]="!reply().trim() || room.busy()"
+          (click)="connect()"
+        >
+          {{ room.busy() ? 'Connecting…' : 'Connect player' }}
+        </button>
+      }
+    </section>
+
+    <section class="card stack">
+      <div class="section-title">Start</div>
+      <div class="field">
+        <label for="prompts">Prompts, one per line</label>
+        <textarea
+          id="prompts"
+          class="textarea"
+          rows="8"
+          [value]="prompts()"
+          (input)="onPrompts($event)"
+        ></textarea>
+      </div>
+      <button
+        class="btn btn--primary btn--block"
+        [disabled]="!canStart()"
+        (click)="start()"
+      >
+        Start game
+      </button>
+      @if (!canStart()) {
+        <p class="hint">Waiting for at least one more player.</p>
+      }
+    </section>
+  } @else {
+    <section class="card card--flat stack">
+      <div class="section-title">Waiting</div>
+      <p class="muted">
+        The host will start the game once everyone is here. Keep this tab open.
+      </p>
+      <div class="row">
+        <span class="dot dot--wait"></span>
+        <span>Waiting for {{ hostName() }}</span>
+      </div>
+    </section>
+  }
+</div>
+
+@if (room.error()) {
+  <div class="alert lobby__error" role="alert">{{ room.error() }}</div>
+}

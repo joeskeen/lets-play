@@ -1,26 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Let's play!</title>
+    <title>Let's Play — a peer-to-peer party game</title>
     <base href="/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="assets/font-awesome-svgs/solid/dice.svg"
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0e1a" />
+    <meta
+      name="description"
+      content="A tiny peer-to-peer party game. No accounts, no game server — just WebRTC between the people you invite."
     />
-    <script>
-      if (document.location.href.endsWith('.html')) {
-        const correctBaseUrl = /^(.*?)[^\/]+$/.exec(document.location.href)[1];
-        document.location.href = correctBaseUrl;
-      } else {
-        const base = document.querySelector('head base');
-        base.setAttribute('href', document.location.href);
-      }
-      window.gitHash = '__GIT_HASH__';
-      window.buildTimestamp = '__BUILD_TIMESTAMP__';
-    </script>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   </head>
   <body>
     <app-root></app-root>

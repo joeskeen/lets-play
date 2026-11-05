@@ -1,0 +1,216 @@
+<header class="stack stack--tight game__head">
+  <div class="row row--between">
+    <div class="section-title">
+      Round {{ game().round }} · {{ stepLabel() }}
+    </div>
+    <button class="btn btn--ghost btn--sm" (click)="leave()">Leave</button>
+  </div>
+
+  <h1 class="game__prompt">{{ game().prompt }}</h1>
+
+  <div class="row">
+    <span class="pill">
+      <span class="dot" [class.dot--on]="room.openPeers() > 0"></span>
+      {{ room.memberViews().length }}
+      {{ room.memberViews().length === 1 ? 'player' : 'players' }}
+    </span>
+    @if (game().step === 'writing') {
+      <span class="pill">{{ waiting() }} still answering</span>
+    }
+    @if (game().step === 'guessing') {
+      <span class="pill">Turn: {{ turnName() }}</span>
+    }
+  </div>
+</header>
+
+@switch (game().step) {
+  @case ('writing') {
+    <section class="card card--accent stack">
+      @if (responded()) {
+        <div class="notice">
+          Locked in.
+          @if (waiting() === 1) {
+            One player is still thinking.
+          } @else {
+            {{ waiting() }} players are still thinking.
+          }
+        </div>
+        <p class="hint">
+          Answers stay hidden until everyone has written one.
+        </p>
+      } @else {
+        <label class="label" for="answer">Your answer</label>
+        <textarea
+          id="answer"
+          class="textarea"
+          rows="3"
+          maxlength="160"
+          [value]="draft()"
+          (input)="onDraft($event)"
+          (keydown.control.enter)="submit()"
+          placeholder="Say something funny…"
+        ></textarea>
+        <div class="row row--between">
+          <span class="hint">{{ draft().length }}/160</span>
+          <button
+            class="btn btn--primary"
+            [disabled]="!draft().trim()"
+            (click)="submit()"
+          >
+            Lock it in
+          </button>
+        </div>
+      }
+    </section>
+
+    <section class="card card--flat stack">
+      <div class="section-title">Answers in</div>
+      <div class="list">
+        @for (player of game().players; track player.id) {
+          <div class="list__item" [class.list__item--me]="player.id === meId()">
+            <app-avatar [id]="player.id" [name]="player.name" size="sm" />
+            <span class="list__grow list__name">{{ player.name }}</span>
+            <span class="badge" [class.badge--live]="answered(player.id)">
+              {{ answered(player.id) ? 'in' : 'thinking' }}
+            </span>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  @case ('guessing') {
+    @if (room.isMyTurn()) {
+      <div class="notice">
+        Your turn. Pick a <strong>?</strong> answer, then choose who wrote it.
+        A correct guess scores a point and keeps your turn. A miss passes it on.
+      </div>
+    } @else {
+      <div class="notice">Waiting for {{ turnName() }} to guess.</div>
+    }
+
+    <section class="responses">
+      @for (response of game().responses; track response.id) {
+        @if (response.revealed || response.authorId === meId()) {
+          <article class="response response--open">
+            <p class="response__text">{{ response.text }}</p>
+            <div class="row">
+              <app-avatar
+                [id]="response.authorId"
+                [name]="authorName(response.authorId)"
+                size="sm"
+              />
+              <span class="small">
+                {{ authorName(response.authorId) }}
+                @if (response.authorId === meId()) {
+                  <span class="faint"> · you</span>
+                }
+              </span>
+            </div>
+          </article>
+        } @else {
+          <article
+            class="response"
+            [class.response--picked]="picked() === response.id"
+          >
+            <p class="response__text">{{ response.text }}</p>
+            @if (room.isMyTurn()) {
+              <button
+                class="btn btn--ghost btn--sm"
+                (click)="pick(response.id)"
+              >
+                Who said this?
+              </button>
+            } @else {
+              <span class="badge">?</span>
+            }
+          </article>
+        }
+      }
+    </section>
+
+    @if (room.isMyTurn()) {
+      @if (selectedResponse(); as chosen) {
+        <section class="card card--accent stack game__picker">
+          <div class="section-title">Who wrote this?</div>
+          <p class="response__text">“{{ chosen.text }}”</p>
+          <div class="list">
+            @for (player of guessable(); track player.id) {
+              <button
+                class="btn btn--ghost btn--block game__guess"
+                (click)="guess(player.id)"
+              >
+                <app-avatar [id]="player.id" [name]="player.name" size="sm" />
+                <span>{{ player.name }}</span>
+              </button>
+            }
+          </div>
+          <button class="btn btn--ghost btn--sm" (click)="clearPick()">
+            Cancel
+          </button>
+        </section>
+      }
+    }
+
+    <section class="card card--flat stack">
+      <div class="section-title">Scoreboard</div>
+      <app-scoreboard
+        [players]="game().players"
+        [meId]="meId()"
+        [hostId]="hostId()"
+      />
+    </section>
+  }
+
+  @case ('round-end') {
+    <section class="card stack">
+      <div class="section-title">Round {{ game().round }} over</div>
+      <app-scoreboard
+        [players]="game().players"
+        [meId]="meId()"
+        [hostId]="hostId()"
+      />
+      @if (room.isHost()) {
+        @if (room.memberViews().length >= 2) {
+          <button class="btn btn--primary btn--block" (click)="nextRound()">
+            Start next round
+          </button>
+        } @else {
+          <p class="hint">
+            Everyone else left. Leave and host again to invite more players.
+          </p>
+        }
+      } @else {
+        <div class="row">
+          <span class="dot dot--wait"></span>
+          <span class="muted">Waiting for the host</span>
+        </div>
+      }
+    </section>
+  }
+
+  @case ('game-over') {
+    <section class="card stack">
+      <div class="section-title">Final scores</div>
+      <app-scoreboard
+        [players]="game().players"
+        [meId]="meId()"
+        [hostId]="hostId()"
+      />
+      @if (room.isHost()) {
+        <button class="btn btn--primary btn--block" (click)="playAgain()">
+          Back to lobby
+        </button>
+      } @else {
+        <div class="row">
+          <span class="dot dot--wait"></span>
+          <span class="muted">Waiting for the host</span>
+        </div>
+      }
+    </section>
+  }
+}
+
+@if (room.error()) {
+  <div class="alert game__error" role="alert">{{ room.error() }}</div>
+}

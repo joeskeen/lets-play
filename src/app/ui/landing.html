@@ -1,0 +1,72 @@
+<div class="hero">
+  <span class="pill"><span class="dot dot--on"></span> Peer-to-peer · no game server</span>
+  <h1>Let’s Play</h1>
+  <p>
+    A tiny party game that runs between the people playing it. One person
+    hosts; everyone else joins with a link. No accounts, no backend, no
+    database — just WebRTC.
+  </p>
+</div>
+
+<div class="grid">
+  <section class="card stack">
+    <div class="section-title">You</div>
+    <div class="row">
+      <app-avatar [id]="room.identity().id" [name]="name()" size="lg" />
+      <div class="list__grow stack stack--tight">
+        <label class="label" for="display-name">Display name</label>
+        <input
+          id="display-name"
+          class="input"
+          [value]="name()"
+          (input)="onName($event)"
+          (blur)="commitName()"
+          maxlength="24"
+          autocomplete="nickname"
+          placeholder="Your name"
+        />
+      </div>
+    </div>
+    <p class="hint">
+      Your avatar is drawn from your id, so it looks the same on every screen
+      without sending an image.
+    </p>
+  </section>
+
+  <section class="card stack">
+    <div class="section-title">Host</div>
+    <h2>Start a room</h2>
+    <p class="muted">
+      You keep the order of play and the score. Invite people one at a time —
+      each link is a single-use handshake.
+    </p>
+    <button class="btn btn--primary btn--block" (click)="host()">
+      Host a game
+    </button>
+  </section>
+
+  <section class="card stack">
+    <div class="section-title">Join</div>
+    <h2>Got an invite?</h2>
+    <p class="muted">Paste the link or code the host sent you.</p>
+    <textarea
+      class="textarea textarea--code"
+      rows="4"
+      [value]="joinText()"
+      (input)="onJoinText($event)"
+      placeholder="https://…/#i=…"
+      aria-label="Invite link or code"
+    ></textarea>
+    <button
+      class="btn btn--violet btn--block"
+      [disabled]="!joinText().trim() || joining()"
+      (click)="join()"
+    >
+      {{ joining() ? 'Preparing…' : 'Join a game' }}
+    </button>
+  </section>
+</div>
+
+@if (room.error()) {
+  <div class="alert landing__error" role="alert">{{ room.error() }}</div>
+}

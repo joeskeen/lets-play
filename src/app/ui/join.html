@@ -1,0 +1,52 @@
+<div class="hero">
+  <span class="badge badge--wait"><span class="dot dot--wait"></span> Handshake</span>
+  <h1>You’re almost in</h1>
+  <p>
+    Send the reply code back to the host in the same chat where you got the
+    invite. Your browser has already prepared its half of the connection.
+  </p>
+</div>
+
+@if (room.replyCode()) {
+  <section class="card card--accent stack">
+    <div class="section-title">Your reply</div>
+    <textarea
+      class="textarea textarea--code"
+      rows="5"
+      readonly
+      [value]="room.replyCode()"
+      aria-label="Your reply code"
+    ></textarea>
+    <div class="row">
+      <button class="btn btn--primary" (click)="copy()">
+        {{ copied() ? 'Copied' : 'Copy reply' }}
+      </button>
+      <button class="btn btn--ghost" (click)="cancel()">Cancel</button>
+    </div>
+    <p class="hint">
+      Treat it as single-use. It contains this connection’s credentials and
+      stops working once the host closes the room or this tab.
+    </p>
+  </section>
+} @else {
+  <section class="card stack">
+    <div class="row"><span class="dot dot--wait"></span><strong>Preparing the reply…</strong></div>
+  </section>
+}
+
+<section class="card card--flat stack">
+  <div class="row">
+    <span class="dot dot--wait"></span>
+    <strong>
+      Waiting for {{ room.joiningHost() || 'the host' }}
+    </strong>
+  </div>
+  <p class="muted small">
+    This screen moves on by itself once the host pastes your reply. Keep this
+    tab open.
+  </p>
+</section>
+
+@if (room.error()) {
+  <div class="alert" role="alert">{{ room.error() }}</div>
+}
